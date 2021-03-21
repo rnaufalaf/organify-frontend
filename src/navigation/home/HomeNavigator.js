@@ -1,7 +1,7 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import HomeScreen from '../../screens/home/HomeScreen';
+import HomeScreen from "../../screens/home/HomeScreen";
 
 const Home = createStackNavigator();
 
@@ -11,7 +11,7 @@ export default function HomeNavigator() {
       <Home.Screen
         name="Home"
         component={HomeScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </Home.Navigator>
   );
