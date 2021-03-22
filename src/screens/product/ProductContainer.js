@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions, StyleSheet, ScrollView } from "react-native";
+import { Card } from "react-native-paper";
 
 import ProductList from "./ProductList";
-import SearchBar from "../common/SearchBar";
+import SearchBar from "../../components/common/SearchBar";
 import SearchedProducts from "./SearchedProducts";
-import Carousel from "../carousel/Carousel";
-import TitleComponent from "../common/TitleComponent";
-import SubtitleComponent from "../common/SubtitleComponent";
-import CategoryFilter from "../product/CategoryFilter";
+import Carousel from "../../components/carousel/Carousel";
+import TitleComponent from "../../components/common/TitleComponent";
+import SubtitleComponent from "../../components/common/SubtitleComponent";
+import CategoryFilter from "./CategoryFilter";
 
 import data from "../../assets/data/products.json";
 import productCategories from "../../assets/data/categories.json";
@@ -72,13 +73,20 @@ const ProductContainer = (props) => {
 
   return (
     <View>
+      <Card>
+        <TitleComponent title="Mau beli apa hari ini, Rakha?" />
+        <SubtitleComponent subtitle="Pilih berdasarkan kategori berikut" />
+      </Card>
       <SearchBar
         onChangeText={(text) => searchProduct(text)}
         onFocus={openList}
         clearIconPressed={onBlur}
       />
       {focus == true ? (
-        <SearchedProducts productsFiltered={productsFiltered} />
+        <SearchedProducts
+          navigation={props.navigation}
+          productsFiltered={productsFiltered}
+        />
       ) : (
         <ScrollView>
           <View>
@@ -99,7 +107,13 @@ const ProductContainer = (props) => {
             {productsCtg.length > 0 ? (
               <View style={styles.listContainer}>
                 {productsCtg.map((item) => {
-                  return <ProductList key={item.$oid} item={item} />;
+                  return (
+                    <ProductList
+                      navigation={props.navigation}
+                      key={item.name}
+                      item={item}
+                    />
+                  );
                 })}
               </View>
             ) : (
