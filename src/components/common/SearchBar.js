@@ -4,10 +4,6 @@ import { TouchableOpacity } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const SearchBar = (props) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
-
-  const onChangeSearch = (query) => setSearchQuery(query);
-
   return (
     <Searchbar
       placeholder={props.placeholder}

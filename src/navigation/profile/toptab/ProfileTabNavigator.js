@@ -1,14 +1,23 @@
-import React from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import React from "react";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import BuyerProfileStack from '../BuyerProfileStack';
-import SellerProfileStack from '../SellerProfileStack';
+import BuyerProfileStack from "../BuyerProfileStack";
+import SellerProfileStack from "../SellerProfileStack";
 
 const ProfileTab = createMaterialTopTabNavigator();
 
-export default function OrderTabNavigator() {
+export default function ProfileTabNavigator() {
+  const tabBarOptions = {
+    activeTintColor: "white",
+    inactiveTintColor: "black",
+    indicatorStyle: { backgroundColor: "red", height: "100%" },
+    pressOpacity: 1,
+  };
   return (
-    <ProfileTab.Navigator initialRouteName="Current">
+    <ProfileTab.Navigator
+      tabBarOptions={tabBarOptions}
+      initialRouteName="Buyer"
+    >
       <ProfileTab.Screen name="Buyer" component={BuyerProfileStack} />
       <ProfileTab.Screen name="Seller" component={SellerProfileStack} />
     </ProfileTab.Navigator>

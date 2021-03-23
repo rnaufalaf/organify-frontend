@@ -9,6 +9,7 @@ import ApolloClient from "apollo-client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
+import { NavigationContainer } from "@react-navigation/native";
 
 import { AuthProvider } from "./src/context/auth";
 import MainNavigator from "./src/navigation/MainNavigator";
@@ -62,7 +63,9 @@ export default function App() {
         <OrganifyProvider>
           <SafeAreaProvider>
             <PaperProvider theme={theme}>
-              <MainNavigator />
+              <NavigationContainer>
+                <MainNavigator />
+              </NavigationContainer>
             </PaperProvider>
           </SafeAreaProvider>
         </OrganifyProvider>
