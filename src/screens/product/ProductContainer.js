@@ -77,11 +77,13 @@ const ProductContainer = (props) => {
         <TitleComponent title="Mau beli apa hari ini, Rakha?" />
         <SubtitleComponent subtitle="Pilih berdasarkan kategori berikut" />
       </Card>
-      <SearchBar
-        onChangeText={(text) => searchProduct(text)}
-        onFocus={openList}
-        clearIconPressed={onBlur}
-      />
+      <Card>
+        <SearchBar
+          onChangeText={(text) => searchProduct(text)}
+          onFocus={openList}
+          clearIconPressed={onBlur}
+        />
+      </Card>
       {focus == true ? (
         <SearchedProducts
           navigation={props.navigation}
@@ -93,17 +95,19 @@ const ProductContainer = (props) => {
             <View>
               <Carousel />
             </View>
-            <TitleComponent title="Best seller" />
-            <SubtitleComponent subtitle="Produk yang sering dibeli" />
-            <View>
-              <CategoryFilter
-                categories={categories}
-                categoryFilter={changeCtg}
-                productsCtg={productsCtg}
-                active={active}
-                setActive={setActive}
-              />
-            </View>
+            <Card>
+              <TitleComponent title="Best seller" />
+              <SubtitleComponent subtitle="Produk yang sering dibeli" />
+              <View>
+                <CategoryFilter
+                  categories={categories}
+                  categoryFilter={changeCtg}
+                  productsCtg={productsCtg}
+                  active={active}
+                  setActive={setActive}
+                />
+              </View>
+            </Card>
             {productsCtg.length > 0 ? (
               <View style={styles.listContainer}>
                 {productsCtg.map((item) => {

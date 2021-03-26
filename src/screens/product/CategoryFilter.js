@@ -1,46 +1,48 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { Chip } from "react-native-paper";
+import { Chip, Card } from "react-native-paper";
 import { ListItem } from "native-base";
 
 const CategoryFilter = (props) => {
   return (
     <ScrollView horizontal={true} style={{ backgroundColor: "#f2f2f2" }}>
-      <ListItem style={{ margin: 5, padding: 0, borderRadius: 3 }}>
-        <Chip
-          key={1}
-          textStyle={styles.text}
-          style={[
-            styles.center,
-            { margin: 5 },
-            props.active == -1 ? styles.active : styles.inactive,
-          ]}
-          onPress={() => {
-            props.categoryFilter("all"), props.setActive(-1);
-          }}
-        >
-          All
-        </Chip>
-        {props.categories.map((item) => (
+      <Card>
+        <ListItem style={{ margin: 5, padding: 0, borderRadius: 3 }}>
           <Chip
-            key={item._id}
+            key={1}
             textStyle={styles.text}
             style={[
               styles.center,
               { margin: 5 },
-              props.active == props.categories.indexOf(item)
-                ? styles.active
-                : styles.inactive,
+              props.active == -1 ? styles.active : styles.inactive,
             ]}
             onPress={() => {
-              props.categoryFilter(item._id.$oid);
-              props.setActive(props.categories.indexOf(item));
+              props.categoryFilter("all"), props.setActive(-1);
             }}
           >
-            {item.name}
+            All
           </Chip>
-        ))}
-      </ListItem>
+          {props.categories.map((item) => (
+            <Chip
+              key={item._id}
+              textStyle={styles.text}
+              style={[
+                styles.center,
+                { margin: 5 },
+                props.active == props.categories.indexOf(item)
+                  ? styles.active
+                  : styles.inactive,
+              ]}
+              onPress={() => {
+                props.categoryFilter(item._id.$oid);
+                props.setActive(props.categories.indexOf(item));
+              }}
+            >
+              {item.name}
+            </Chip>
+          ))}
+        </ListItem>
+      </Card>
     </ScrollView>
   );
 };

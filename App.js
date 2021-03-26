@@ -11,6 +11,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 
+import { Provider } from "react-redux";
+import store from "./Redux/store";
+
 import { AuthProvider } from "./src/context/auth";
 import MainNavigator from "./src/navigation/MainNavigator";
 import { OrganifyProvider } from "./src/context/OrganifyProvider";
@@ -63,9 +66,11 @@ export default function App() {
         <OrganifyProvider>
           <SafeAreaProvider>
             <PaperProvider theme={theme}>
-              <NavigationContainer>
-                <MainNavigator />
-              </NavigationContainer>
+              <Provider store={store}>
+                <NavigationContainer>
+                  <MainNavigator />
+                </NavigationContainer>
+              </Provider>
             </PaperProvider>
           </SafeAreaProvider>
         </OrganifyProvider>

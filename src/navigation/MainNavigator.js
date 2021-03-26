@@ -7,9 +7,11 @@ import { TouchableOpacity } from "react-native";
 import AuthNavigator from "./authentication/AuthNavigator";
 import HomeTabNavigator from "./home/bottomtab/HomeTabNavigator";
 
+import CartBadge from "../components/common/CartBadge";
+
 const Main = createStackNavigator();
 
-export default function MainNavigator() {
+export default function MainNavigator({ navigation }) {
   return (
     <Main.Navigator
       initialRouteName="HomeTab"
@@ -28,7 +30,7 @@ export default function MainNavigator() {
       <Main.Screen
         name="HomeTab"
         component={HomeTabNavigator}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: "Organify",
           headerTitleAlign: "center",
           headerTitleStyle: {
@@ -39,14 +41,14 @@ export default function MainNavigator() {
           },
           headerRight: () => (
             <TouchableOpacity
-              onPress={() => {
-                console.log("cart pressed");
-              }}
+              style={{ marginRight: 15 }}
+              onPress={() => navigation.navigate("Cart")}
             >
               <Icon
                 name="shopping-cart"
-                style={{ color: "white", fontSize: 25, marginRight: 10 }}
+                style={{ color: "white", fontSize: 25 }}
               />
+              <CartBadge />
             </TouchableOpacity>
           ),
           headerLeft: () => (
@@ -61,7 +63,7 @@ export default function MainNavigator() {
               />
             </TouchableOpacity>
           ),
-        }}
+        })}
       />
     </Main.Navigator>
   );

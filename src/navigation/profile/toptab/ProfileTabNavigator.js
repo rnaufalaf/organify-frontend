@@ -10,7 +10,7 @@ export default function ProfileTabNavigator() {
   const tabBarOptions = {
     activeTintColor: "white",
     inactiveTintColor: "black",
-    indicatorStyle: { backgroundColor: "red", height: "100%" },
+    indicatorStyle: { backgroundColor: "green", height: "100%" },
     pressOpacity: 1,
   };
   return (

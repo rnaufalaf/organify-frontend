@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import ProductContainer from "../../screens/product//ProductContainer";
 import ProductDetailScreen from "../../screens/product/ProductDetailScreen";
+import CartScreen from "../../screens/cart/CartScreen";
 
 const Home = createStackNavigator();
 
@@ -17,6 +18,11 @@ export default function HomeNavigator() {
       <Home.Screen
         name="Product Detail"
         component={ProductDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Home.Screen
+        name="Cart"
+        component={CartScreen}
         options={{ headerShown: false }}
       />
     </Home.Navigator>

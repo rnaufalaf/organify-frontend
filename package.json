@@ -11,6 +11,7 @@
     "@apollo/client": "^3.3.12",
     "@apollo/react-hooks": "^4.0.0",
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/viewpager": "^5.0.11",
     "@react-navigation/material-bottom-tabs": "^5.3.14",
     "@react-navigation/material-top-tabs": "^5.3.14",
@@ -35,16 +36,20 @@
     "react-native-gesture-handler": "^1.10.3",
     "react-native-pager-view": "^5.1.2",
     "react-native-paper": "^4.7.2",
+    "react-native-reanimated": "~1.13.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^3.2.0",
+    "react-native-screens": "~2.15.2",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.0.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
-    "react-native-reanimated": "~1.13.0",
-    "react-native-screens": "~2.15.2",
-    "@react-native-community/masked-view": "0.1.10"
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

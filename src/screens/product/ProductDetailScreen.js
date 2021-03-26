@@ -7,12 +7,16 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { connect } from "react-redux";
+
 import { Card, Divider } from "react-native-paper";
 import { Left, Right } from "native-base";
 
 import Button from "../../components/common/Button";
 import TitleComponent from "../../components/common/TitleComponent";
 import Paragraph from "../../components/common/Paragraph";
+
+import * as actions from "../../../Redux/actions/cartActions";
 
 const ProductDetailScreen = (props) => {
   const [item, setItem] = useState(props.route.params.item);
@@ -74,12 +78,21 @@ const ProductDetailScreen = (props) => {
         <Left>
           <Text style={styles.price}>Rp. {item.price}</Text>
         </Left>
-        <Right>
-          <Button mode="contained">Add to Cart</Button>
+        <Right style={{ paddingRight: 15 }}>
+          <Button mode="contained" onPress={() => props.addItemToCart(item)}>
+            Add to Cart
+          </Button>
         </Right>
       </View>
     </View>
   );
+};
+
+const mapToDispatchToProps = (dispatch) => {
+  return {
+    addItemToCart: (product) =>
+      dispatch(actions.addToCart({ quantity: 1, product })),
+  };
 };
 
 const styles = StyleSheet.create({
@@ -136,4 +149,5 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
   },
 });
-export default ProductDetailScreen;
+
+export default connect(null, mapToDispatchToProps)(ProductDetailScreen);

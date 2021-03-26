@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, View, Dimensions } from "react-native";
+import { View, Dimensions, TouchableHighlight } from "react-native";
+import { TouchableRipple } from "react-native-paper";
 
 import ProductCard from "./ProductCard";
 
@@ -9,8 +10,7 @@ const ProductList = (props) => {
   const { item } = props;
   return (
     <View style={{ flexDirection: "column", width: width / 2 }}>
-      <TouchableOpacity
-        style={{ width: "50%" }}
+      <TouchableHighlight
         onPress={() =>
           props.navigation.navigate("Product Detail", { item: item })
         }
@@ -18,7 +18,7 @@ const ProductList = (props) => {
         <View style={{ width: width / 2, backgroundColor: "white" }}>
           <ProductCard {...item} />
         </View>
-      </TouchableOpacity>
+      </TouchableHighlight>
     </View>
   );
 };
