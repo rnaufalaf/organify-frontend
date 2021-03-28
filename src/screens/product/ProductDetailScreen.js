@@ -88,7 +88,7 @@ const ProductDetailScreen = (props) => {
   );
 };
 
-const mapToDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     addItemToCart: (product) =>
       dispatch(actions.addToCart({ quantity: 1, product })),
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(null, mapToDispatchToProps)(ProductDetailScreen);
+export default connect(null, mapDispatchToProps)(ProductDetailScreen);

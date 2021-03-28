@@ -1,12 +1,22 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { Left, Right, ListItem, Body, Container } from "native-base";
-import { Avatar, Divider } from "react-native-paper";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { Left, Right, Container } from "native-base";
+import { Divider } from "react-native-paper";
+import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { connect } from "react-redux";
 
 import Button from "../../components/common/Button";
+import CartItem from "./CartItem";
+import * as actions from "../../../Redux/actions/cartActions";
 
 var { height, width } = Dimensions.get("window");
 
@@ -19,43 +29,38 @@ const CartScreen = (props) => {
     <>
       {props.cartItems.length ? (
         <Container>
-          {props.cartItems.map((data) => {
-            return (
-              <View>
-                <ListItem style={styles.listItem} key={Math.random()} avatar>
-                  <Left>
-                    <Avatar.Image
-                      source={{
-                        uri: data.product.image
-                          ? data.product.image
-                          : "https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png",
-                      }}
+          <ScrollView>
+            <SwipeListView
+              data={props.cartItems}
+              renderItem={(data) => <CartItem item={data} />}
+              renderHiddenItem={(data) => (
+                <View style={styles.hiddenContainer}>
+                  <TouchableOpacity style={styles.hiddenButton}>
+                    <Icon
+                      name="trash"
+                      color={"white"}
+                      size={30}
+                      onPress={() => props.removeFromCart(data.item)}
                     />
-                  </Left>
-                  <Body style={styles.body}>
-                    <Left>
-                      <Text>{data.product.name}</Text>
-                    </Left>
-                    <Right>
-                      <Text>Rp. {data.product.price}</Text>
-                    </Right>
-                  </Body>
-                </ListItem>
-              </View>
-            );
-          })}
+                  </TouchableOpacity>
+                </View>
+              )}
+              disableRightSwipe={true}
+              previewOpenDelay={3000}
+              friction={1000}
+              tension={40}
+              leftOpenValue={75}
+              stopLeftSwipe={75}
+              rightOpenValue={-75}
+            ></SwipeListView>
+          </ScrollView>
           <Divider />
           <View style={styles.bottomContainer}>
             <Left>
               <Text style={styles.price}>Rp. {total}</Text>
             </Left>
             <Right style={{ paddingLeft: 10 }}>
-              <Button
-                mode="contained"
-                onPress={() => {
-                  console.log("button pressed");
-                }}
-              >
+              <Button mode="contained" onPress={() => props.clearCart()}>
                 Clear
               </Button>
             </Right>
@@ -88,25 +93,22 @@ const mapStateToProps = (state) => {
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearCart: () => dispatch(actions.clearCart()),
+    removeFromCart: (item) => dispatch(actions.removeFromCart(item)),
+  };
+};
+
 const styles = StyleSheet.create({
   emptyContainer: {
     height: height,
     alignItems: "center",
     justifyContent: "center",
   },
-  listItem: {
-    alignItems: "center",
-    backgroundColor: "white",
-    justifyContent: "center",
-  },
-  body: {
-    margin: 30,
-    alignItems: "center",
-    flexDirection: "row",
-  },
   bottomContainer: {
     flexDirection: "row",
-    position: "absolute",
+    position: "relative",
     bottom: 0,
     left: 0,
     backgroundColor: "white",
@@ -118,6 +120,19 @@ const styles = StyleSheet.create({
     margin: 20,
     color: "green",
   },
+  hiddenContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+  },
+  hiddenButton: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    paddingRight: 25,
+    height: 70,
+    width: width / 1.2,
+  },
 });
 
-export default connect(mapStateToProps, null)(CartScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(CartScreen);
