@@ -1,86 +1,60 @@
 import React from "react";
+import { Dimensions, View, Text, Image, StyleSheet } from "react-native";
 import {
-  Dimensions,
-  View,
-  Text,
-  Image,
+  Avatar,
+  Card,
+  Title,
+  Paragraph,
   Button,
-  StyleSheet,
-  TouchableHighlight,
-} from "react-native";
-import { Card } from "react-native-paper";
-import { connect } from "react-redux";
-import * as actions from "../../../Redux/actions/cartActions";
+  TouchableRipple,
+} from "react-native-paper";
 
 var { width } = Dimensions.get("window");
 
 const ProductCard = (props) => {
-  const { name, price, image, countInStock } = props;
+  const { product } = props;
 
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        resizeMode="contain"
-        source={{
-          uri: image
-            ? image
-            : "https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png",
-        }}
-      />
+    <Card
+      style={styles.container}
+      onPress={() =>
+        props.navigation.navigate("Product Detail", {
+          product: props.product,
+        })
+      }
+    >
+      <Card.Cover source={{ uri: product.images[0].downloadUrl }} />
 
       <Text
         style={{
           textAlign: "center",
-          bottom: -120,
           backgroundColor: "gainsboro",
         }}
       >
-        Tersisa 2 pack
+        Tersisa <Text>{product.stock}</Text> pack
       </Text>
-      <View style={styles.card} />
-      <Text style={styles.title}>
-        {name.length > 15 ? name.substring(0, 15 - 3) + "..." : name}
-      </Text>
-      <Text style={styles.price}>
-        Rp. {price} <Text style={{ color: "orange" }}> / pack</Text>
-      </Text>
-
-      {countInStock > 0 ? (
-        <View style={{ marginTop: 10 }}>
-          <Button
-            title="Add"
-            color="green"
-            onPress={() => {
-              props.addItemToCart(props);
-            }}
-          />
-        </View>
-      ) : (
-        <Text style={{ marginTop: 20 }}>Currently Unavailable</Text>
-      )}
-    </View>
+      <Card.Title title={product.name} />
+      <Card.Content>
+        <Title style={styles.price}>
+          Rp. {product.price} <Text style={{ color: "orange" }}> / pack</Text>
+        </Title>
+      </Card.Content>
+    </Card>
   );
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addItemToCart: (product) =>
-      dispatch(actions.addToCart({ quantity: 1, product })),
-  };
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: width / 2 - 20,
-    height: width / 1.5,
-    padding: 10,
+    // width: width / 2 - 20,
+    // height: width / 1.5,
+    // padding: 10,
     borderRadius: 10,
-    marginTop: 55,
-    marginBottom: 5,
-    marginLeft: 10,
-    elevation: 8,
-    backgroundColor: "white",
+    marginTop: 4,
+    marginBottom: 4,
+    marginLeft: 2,
+    marginRight: 2,
+    // elevation: 4,
+    // backgroundColor: "white",
   },
   image: {
     width: width / 2 - 20 - 10,
@@ -104,8 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "black",
-    marginTop: 5,
   },
 });
 
-export default connect(null, mapDispatchToProps)(ProductCard);
+export default ProductCard;

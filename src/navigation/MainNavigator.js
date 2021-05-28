@@ -1,5 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { TouchableOpacity } from "react-native";
@@ -7,14 +7,32 @@ import { TouchableOpacity } from "react-native";
 import AuthNavigator from "./authentication/AuthNavigator";
 import HomeTabNavigator from "./home/bottomtab/HomeTabNavigator";
 
-import CartBadge from "../components/common/CartBadge";
-
 const Main = createStackNavigator();
+
+function getHeaderTitle(route) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Organify";
+
+  switch (routeName) {
+    case "Home":
+      return "Organify";
+    case "Order":
+      return "My Orders";
+  }
+}
+
+function getHeaderRoute(route) {
+  const routeName = getFocusedRouteNameFromRoute(route);
+
+  switch (routeName) {
+    case "Profile":
+      return false;
+  }
+}
 
 export default function MainNavigator({ navigation }) {
   return (
     <Main.Navigator
-      initialRouteName="HomeTab"
+      initialRouteName="Authentication"
       screenOptions={{
         gestureEnabled: false,
       }}
@@ -30,8 +48,9 @@ export default function MainNavigator({ navigation }) {
       <Main.Screen
         name="HomeTab"
         component={HomeTabNavigator}
-        options={({ navigation }) => ({
-          headerTitle: "Organify",
+        options={({ navigation, route }) => ({
+          headerTitle: getHeaderTitle(route),
+          headerShown: getHeaderRoute(route),
           headerTitleAlign: "center",
           headerTitleStyle: {
             color: "white",
@@ -48,7 +67,7 @@ export default function MainNavigator({ navigation }) {
                 name="shopping-cart"
                 style={{ color: "white", fontSize: 25 }}
               />
-              <CartBadge />
+              {/* <CartBadge /> */}
             </TouchableOpacity>
           ),
           headerLeft: () => (

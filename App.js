@@ -10,6 +10,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 import { Provider } from "react-redux";
 import store from "./Redux/store";
@@ -20,7 +21,11 @@ import { OrganifyProvider } from "./src/context/OrganifyProvider";
 import { theme } from "./src/constants/Theme";
 
 const httpLink = createHttpLink({
-  uri: "http://192.168.100.4:1000/graphql",
+  // uri: "https://organify-graphql-backend.herokuapp.com/graphql",
+  // uri: "http://192.168.100.4:1000/graphql",
+  // uri: "http://192.168.13.101:1000/graphql",
+  // uri: "http://192.168.207.101:1000/graphql",
+  uri: "http://192.168.163.101:1000/graphql",
 });
 
 const authLink = setContext(async () => {
@@ -69,6 +74,7 @@ export default function App() {
               <Provider store={store}>
                 <NavigationContainer>
                   <MainNavigator />
+                  <Toast ref={(ref) => Toast.setRef(ref)} />
                 </NavigationContainer>
               </Provider>
             </PaperProvider>

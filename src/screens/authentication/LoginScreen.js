@@ -1,4 +1,4 @@
-import React, { memo, useState, useContext } from "react";
+import React, { memo, useState, useContext, useEffect } from "react";
 import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -7,6 +7,7 @@ import {
 import { useMutation } from "@apollo/react-hooks";
 import { List } from "react-native-paper";
 import { CommonActions } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 import Paragraph from "../../components/common/Paragraph";
 import Background from "../../components/common/Background";
@@ -32,8 +33,8 @@ const LoginScreen = ({ navigation }) => {
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     update(_, { data: { login: userData } }) {
+      userData.name == userData.buyer.name;
       login(userData);
-      console.log("succeeded login - userData: ", userData);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -44,9 +45,16 @@ const LoginScreen = ({ navigation }) => {
           ],
         })
       );
+      console.log(userData);
+      Toast.show({
+        topOffset: 60,
+        type: "success",
+        text1: "Login Succesful",
+      });
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
+      console.log(err.graphQLErrors[0]);
     },
     variables: values,
   });
@@ -63,6 +71,7 @@ const LoginScreen = ({ navigation }) => {
         <Paragraph>Organify</Paragraph>
         <TextInput
           label="Email"
+          name="email"
           returnKeyType="next"
           value={values.email}
           error={errors.email ? true : false}
@@ -75,6 +84,7 @@ const LoginScreen = ({ navigation }) => {
 
         <TextInput
           label="Password"
+          name="password"
           returnKeyType="done"
           value={values.password}
           error={errors.password ? true : false}

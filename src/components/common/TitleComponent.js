@@ -10,9 +10,8 @@ const styles = StyleSheet.create({
   titleStyle: {
     color: "black",
     paddingHorizontal: 15,
-    paddingTop: 10,
     fontWeight: "700",
-    fontSize: 24,
+    fontSize: 20,
   },
 });
 

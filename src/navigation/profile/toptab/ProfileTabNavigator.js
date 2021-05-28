@@ -1,4 +1,5 @@
 import React from "react";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import BuyerProfileStack from "../BuyerProfileStack";
@@ -17,6 +18,7 @@ export default function ProfileTabNavigator() {
     <ProfileTab.Navigator
       tabBarOptions={tabBarOptions}
       initialRouteName="Buyer"
+      screenOptions={{}}
     >
       <ProfileTab.Screen name="Buyer" component={BuyerProfileStack} />
       <ProfileTab.Screen name="Seller" component={SellerProfileStack} />

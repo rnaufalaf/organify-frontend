@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "justify",
     fontSize: wp(3.89),
-    lineHeight: 30,
+    lineHeight: 25,
     color: "black",
     marginBottom: 14,
     margin: 20,

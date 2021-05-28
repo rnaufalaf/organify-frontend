@@ -1,13 +1,13 @@
-import React, {memo} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {TextInput as Input} from 'react-native-paper';
-import {theme} from '../../constants/Theme';
+import React, { memo } from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { TextInput as Input } from "react-native-paper";
+import { theme } from "../../constants/Theme";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+} from "react-native-responsive-screen";
 
-const TextInput = ({errorText, ...props}) => (
+const TextInput = ({ errorText, ...props }) => (
   <View style={styles.container}>
     <Input
       style={styles.input}
@@ -21,7 +21,7 @@ const TextInput = ({errorText, ...props}) => (
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
     marginVertical: 6,
   },
   input: {

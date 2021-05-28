@@ -7,9 +7,9 @@ import { connect } from "react-redux";
 const CartBadge = (props) => {
   return (
     <>
-      {props.cartItems.length ? (
+      {props.productsInCart.length ? (
         <Badge style={styles.badge}>
-          <Text style={styles.text}>{props.cartItems.length}</Text>
+          <Text style={styles.text}>{props.productsInCart.length}</Text>
         </Badge>
       ) : null}
     </>

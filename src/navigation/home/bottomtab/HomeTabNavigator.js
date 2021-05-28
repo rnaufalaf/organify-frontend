@@ -1,8 +1,9 @@
 import React from "react";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import HomeNavigator from "../HomeNavigator";
 import OrderNavigator from "../../order/toptab/OrderTabNavigator";
-import ProfileNavigator from "../../profile/toptab/ProfileTabNavigator";
+import ProfileTabStackNavigator from "../../profile/toptab/ProfileTabStackNavigator";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const HomeTab = createMaterialBottomTabNavigator();
@@ -35,11 +36,10 @@ export default function HomeTabNavigator() {
       />
       <HomeTab.Screen
         name="Profile"
-        component={ProfileNavigator}
-        options={{
+        component={ProfileTabStackNavigator}
+        options={() => ({
           tabBarIcon: () => <Icon name="user" color="white" size={25} />,
-          tabBarLabel: "Profile",
-        }}
+        })}
       />
     </HomeTab.Navigator>
   );
