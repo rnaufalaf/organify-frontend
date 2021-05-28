@@ -19,8 +19,8 @@ export default function SellerProfileStack() {
       <ChatNavigator.Screen
         name="Message Screen"
         component={MessageScreen}
-        // options={({route}) => ({
-        //   title: route.params.user
+        // options={({ route }) => ({
+        //   title: route.params.user.buyer.name,
         // })}
       />
     </ChatNavigator.Navigator>

@@ -17,6 +17,7 @@ const CartBySeller = (props) => {
   const [checked, setChecked] = useState(props.productInCart[0].isChecked);
   const [errors, setErrors] = useState({});
 
+  console.log("im here", checked);
   let productIds = [];
   props.productInCart.forEach((productInCart) => {
     productIds = [...productIds, productInCart.product.id];
@@ -69,7 +70,7 @@ const CartBySeller = (props) => {
             text={props.productInCart[0].product.user.seller.username}
             style={{ fontWeight: "bold" }}
             onPress={onChecked}
-            checked={checked}
+            isChecked={checked}
           />
         </Card.Content>
         {props.productInCart &&

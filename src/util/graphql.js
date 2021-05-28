@@ -511,6 +511,7 @@ export const GET_USER_CHATS = gql`
       users {
         id
         seller {
+          id
           username
         }
       }
@@ -525,12 +526,12 @@ export const GET_USER_MESSAGES = gql`
       id
       content
       sentAt
-      user
-      item {
+      user {
         id
-        name
-        price
-        image
+        buyer {
+          id
+          name
+        }
       }
     }
   }

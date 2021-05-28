@@ -27,6 +27,7 @@ const CartScreen = (props) => {
 
   useEffect(() => {
     if (size > 0) {
+      console.log("size", size);
       let group = productsInCart.reduce((r, a) => {
         r[a.product.user.id] = [...(r[a.product.user.id] || []), a];
         return r;
@@ -43,7 +44,7 @@ const CartScreen = (props) => {
         }
       });
       props.checkoutItems(carts, !props.isChange);
-      console.log("lmao", props.carts);
+      console.log("lmaoobject", carts);
     }
   }, [size]);
   let cartUI = (

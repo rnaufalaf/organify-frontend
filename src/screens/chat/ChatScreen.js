@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, View, Text } from "react-native";
 
 import {
   Container,
@@ -39,9 +39,28 @@ const ChatScreen = (props) => {
   //   currentChat.id !== props.selectedChat.id &&
   //   !isChange
   // )
-  console.log("chats", chats);
-  {
-    !loading ? (
+
+  const receiver = (users) => {
+    let userReceiver;
+    if (users[0].id !== user.id) {
+      userReceiver = users[0];
+    } else {
+      userReceiver = users[1];
+    }
+    return userReceiver;
+  };
+
+  let markup = (
+    <Container>
+      <View>
+        <Text>Loading Chats...</Text>
+      </View>
+    </Container>
+  );
+
+  if (!loading) {
+    console.log("chat", chats);
+    markup = (
       <Container>
         <FlatList
           data={chats}
@@ -49,35 +68,37 @@ const ChatScreen = (props) => {
           renderItem={({ item }) => (
             <Card
               onPress={() =>
-                props.navigation.navigate("Chat Screen", {
-                  userName: item.userName,
+                props.navigation.navigate("Message Screen", {
+                  username: receiver(item.users).seller.username,
+                  chatId: item.id,
                 })
               }
             >
               <UserInfo>
                 <UserImgWrapper>
-                  <UserImg source={item.userImg} />
+                  <UserImg
+                    source={{
+                      uri: receiver(item.users).seller.avatar
+                        ? receiver(item.users).seller.avatar
+                        : "https://react.semantic-ui.com/images/avatar/large/molly.png",
+                    }}
+                  />
                 </UserImgWrapper>
                 <TextSection>
                   <UserInfoText>
-                    <UserName>{item.userName}</UserName>
-                    <PostTime>{item.messageTime}</PostTime>
+                    <UserName>{receiver(item.users).seller.username}</UserName>
+                    {/* <PostTime>{item.sentAt}</PostTime> */}
                   </UserInfoText>
-                  <MessageText>{item.messageText}</MessageText>
+                  <MessageText>{item.lastMsg}</MessageText>
                 </TextSection>
               </UserInfo>
             </Card>
           )}
         />
       </Container>
-    ) : (
-      <Container>
-        <View>
-          <Text>Loading Chats...</Text>
-        </View>
-      </Container>
     );
   }
+  return markup;
 };
 
 export default ChatScreen;
