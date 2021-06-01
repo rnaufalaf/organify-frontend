@@ -31,6 +31,7 @@ const SellerProductContainer = (props) => {
                   key={index}
                   product={product}
                   navigation={props.navigation}
+                  refetchCatalog={refetch}
                 />
               </TouchableRipple>
             ))}

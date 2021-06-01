@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { useMutation, useQuery } from "@apollo/client";
-import Swiper from "react-native-swiper/src";
+
 import NumericInput from "react-native-numeric-input";
 import Animated from "react-native-reanimated";
 import BottomSheet from "reanimated-bottom-sheet";
@@ -23,10 +23,10 @@ import Button from "../../components/common/Button";
 import TitleComponent from "../../components/common/TitleComponent";
 import Paragraph from "../../components/common/Paragraph";
 import WishlistButton from "../../components/common/WishlistButton";
+import ImageSlideComponent from "../../components/common/ImageSlideComponent";
 
 import {
   ADD_PRODUCT_TO_CART,
-  ADD_PRODUCT_TO_WISHLIST,
   GET_PRODUCTS_CART,
   GET_PRODUCT_IN_CART,
 } from "../../util/graphql";
@@ -221,14 +221,7 @@ const ProductDetailScreen = (props) => {
         <ScrollView>
           <Card>
             <View style={styles.imageContainer}>
-              <Image
-                style={styles.image}
-                source={{
-                  uri: product.images[0].downloadUrl
-                    ? product.images[0].downloadUrl
-                    : "https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png",
-                }}
-              />
+              <ImageSlideComponent images={product.images} />
               <Text
                 style={{
                   textAlign: "center",
@@ -250,7 +243,10 @@ const ProductDetailScreen = (props) => {
                 onPress={() => props.navigation.navigate("Store Catalog")}
               >
                 <View style={{ flexDirection: "row" }}>
-                  <Avatar.Image size={35} source={product.user.seller.avatar} />
+                  <Avatar.Image
+                    size={35}
+                    source={{ uri: product.user.seller.avatar }}
+                  />
                   <Text style={styles.contentText}>
                     {product.user.seller.username}
                   </Text>

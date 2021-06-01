@@ -4,20 +4,20 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Left, Right } from "native-base";
 import { Divider, Card } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
+import CartByProducts from "./CartByProducts";
+
+import { useMutation } from "@apollo/client";
+import { ADD_CHECKLIST_TO_CART } from "../../util/graphql";
+
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
 import { checkoutItems } from "../../../Redux/actions/orderAction";
-
-import CartByProducts from "./CartByProducts";
-import { ADD_CHECKLIST_TO_CART } from "../../util/graphql";
-import { useMutation } from "@apollo/client";
 
 const CartBySeller = (props) => {
   const [checked, setChecked] = useState(props.productInCart[0].isChecked);
   const [errors, setErrors] = useState({});
 
-  console.log("im here", checked);
+  console.log("im here", props);
   let productIds = [];
   props.productInCart.forEach((productInCart) => {
     productIds = [...productIds, productInCart.product.id];
@@ -34,16 +34,19 @@ const CartBySeller = (props) => {
     },
   });
 
-  const onChecked = (_, data) => {
+  const onChecked = (sellerNameCB) => {
     let carts = props.carts;
     if (carts.length > 0) {
       console.log("udah sampe sini" + carts[0].productInCart);
       if (
         carts.find(
-          (cart) => cart.productsInCart[0].product.user.seller.username
+          (cart) =>
+            cart.productsInCart[0].product.user.seller.username === sellerNameCB
         )
       ) {
-        carts = carts.filter((cart) => cart.user.seller.username);
+        carts = carts.filter(
+          (cart) => cart.user.seller.username !== sellerNameCB
+        );
       } else {
         const cart = {
           user: props.productInCart[0].product.user,
@@ -65,24 +68,27 @@ const CartBySeller = (props) => {
   return (
     <View>
       <Card>
-        <Card.Content>
+        <Card.Content style={{ borderColor: "black", borderRadius: 10 }}>
           <BouncyCheckbox
             text={props.productInCart[0].product.user.seller.username}
-            style={{ fontWeight: "bold" }}
-            onPress={onChecked}
+            style={{ fontWeight: "bold", paddingBottom: 10 }}
+            onPress={() =>
+              onChecked(props.productInCart[0].product.user.seller.username)
+            }
             isChecked={checked}
           />
+          {props.productInCart &&
+            props.productInCart.map((product) => {
+              return (
+                <CartByProducts
+                  key={product.id}
+                  product={product}
+                  checked={checked}
+                  refetchCartQuery={props.refetchCartQuery}
+                />
+              );
+            })}
         </Card.Content>
-        {props.productInCart &&
-          props.productInCart.map((product) => {
-            return (
-              <CartByProducts
-                key={product.id}
-                product={product}
-                checked={checked}
-              />
-            );
-          })}
       </Card>
     </View>
   );

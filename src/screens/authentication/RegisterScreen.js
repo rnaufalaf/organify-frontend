@@ -7,6 +7,7 @@ import {
 import { useMutation } from "@apollo/react-hooks";
 import { List } from "react-native-paper";
 import { CommonActions } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import Paragraph from "../../components/common/Paragraph";
 import Background from "../../components/common/Background";
@@ -53,87 +54,89 @@ const RegisterScreen = ({ navigation }) => {
   };
   return (
     <Background>
-      <View style={styles.container}>
-        <Logo />
-        <Paragraph>Organify</Paragraph>
-        <TextInput
-          label="Email"
-          returnKeyType="next"
-          value={values.email}
-          error={errors.email ? true : false}
-          onChangeText={(val) => onChange("email", val)}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <TextInput
-          label="Username"
-          returnKeyType="next"
-          value={values.username}
-          error={errors.username ? true : false}
-          onChangeText={(val) => onChange("username", val)}
-          autoCapitalize="none"
-          autoCompleteType="username"
-          textContentType="username"
-        />
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <Logo />
+          <Paragraph>Organify</Paragraph>
+          <TextInput
+            label="Email"
+            returnKeyType="next"
+            value={values.email}
+            error={errors.email ? true : false}
+            onChangeText={(val) => onChange("email", val)}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
+          <TextInput
+            label="Username"
+            returnKeyType="next"
+            value={values.username}
+            error={errors.username ? true : false}
+            onChangeText={(val) => onChange("username", val)}
+            autoCapitalize="none"
+            autoCompleteType="username"
+            textContentType="username"
+          />
 
-        <TextInput
-          label="Password"
-          returnKeyType="done"
-          value={values.password}
-          error={errors.password ? true : false}
-          onChangeText={(val) => onChange("password", val)}
-          secureTextEntry
-        />
+          <TextInput
+            label="Password"
+            returnKeyType="done"
+            value={values.password}
+            error={errors.password ? true : false}
+            onChangeText={(val) => onChange("password", val)}
+            secureTextEntry
+          />
 
-        <TextInput
-          label="Confirm Password"
-          returnKeyType="done"
-          value={values.confirmPassword}
-          error={errors.confirmPassword ? true : false}
-          onChangeText={(val) => onChange("confirmPassword", val)}
-          secureTextEntry
-        />
+          <TextInput
+            label="Confirm Password"
+            returnKeyType="done"
+            value={values.confirmPassword}
+            error={errors.confirmPassword ? true : false}
+            onChangeText={(val) => onChange("confirmPassword", val)}
+            secureTextEntry
+          />
 
-        {Object.keys(errors).length > 0 && (
-          <View style={styles.errorContainer}>
-            <List.Section style={styles.errorSection}>
-              {Object.values(errors).map((value) => (
-                <List.Item
-                  key={value}
-                  title={value}
-                  titleStyle={styles.errorItem}
-                  titleNumberOfLines={10}
-                  left={() => (
-                    <List.Icon
-                      color={theme.colors.error}
-                      style={{ margin: 0 }}
-                      icon="alert-circle"
-                    />
-                  )}
-                />
-              ))}
-            </List.Section>
+          {Object.keys(errors).length > 0 && (
+            <View style={styles.errorContainer}>
+              <List.Section style={styles.errorSection}>
+                {Object.values(errors).map((value) => (
+                  <List.Item
+                    key={value}
+                    title={value}
+                    titleStyle={styles.errorItem}
+                    titleNumberOfLines={10}
+                    left={() => (
+                      <List.Icon
+                        color={theme.colors.error}
+                        style={{ margin: 0 }}
+                        icon="alert-circle"
+                      />
+                    )}
+                  />
+                ))}
+              </List.Section>
+            </View>
+          )}
+
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={onSubmit}
+            loading={loading ? true : false}
+          >
+            Create Account
+          </Button>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.link}>Login</Text>
+            </TouchableOpacity>
           </View>
-        )}
-
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={onSubmit}
-          loading={loading ? true : false}
-        >
-          Create Account
-        </Button>
-
-        <View style={styles.row}>
-          <Text style={styles.label}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.link}>Login</Text>
-          </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </Background>
   );
 };

@@ -62,17 +62,22 @@ const CartScreen = (props) => {
 
       cartUI = (
         <>
-          <Container>
-            {group &&
-              Object.keys(group).map((key, index) => (
-                <CartBySeller
-                  key={index}
-                  productInCart={group[key]}
-                  refetchCartQuery={refetch}
-                />
-              ))}
-            <CartSummary />
-          </Container>
+          <ScrollView>
+            <Container>
+              {group &&
+                Object.keys(group).map((key, index) => (
+                  <CartBySeller
+                    key={index}
+                    productInCart={group[key]}
+                    refetchCartQuery={refetch}
+                  />
+                ))}
+            </Container>
+          </ScrollView>
+          <View style={styles.bottomContainer}>
+            <Divider />
+            <CartSummary navigation={props.navigation} />
+          </View>
         </>
       );
     }
@@ -97,7 +102,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   bottomContainer: {
-    flexDirection: "row",
     bottom: 0,
     left: 0,
     backgroundColor: "white",

@@ -8,6 +8,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { List } from "react-native-paper";
 import { CommonActions } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import Paragraph from "../../components/common/Paragraph";
 import Background from "../../components/common/Background";
@@ -66,70 +67,72 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Background>
-      <View style={styles.container}>
-        <Logo />
-        <Paragraph>Organify</Paragraph>
-        <TextInput
-          label="Email"
-          name="email"
-          returnKeyType="next"
-          value={values.email}
-          error={errors.email ? true : false}
-          onChangeText={(val) => onChange("email", val)}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
+      <KeyboardAwareScrollView>
+        <View style={styles.container}>
+          <Logo />
+          <Paragraph>Organify</Paragraph>
+          <TextInput
+            label="Email"
+            name="email"
+            returnKeyType="next"
+            value={values.email}
+            error={errors.email ? true : false}
+            onChangeText={(val) => onChange("email", val)}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
 
-        <TextInput
-          label="Password"
-          name="password"
-          returnKeyType="done"
-          value={values.password}
-          error={errors.password ? true : false}
-          onChangeText={(val) => onChange("password", val)}
-          secureTextEntry
-        />
+          <TextInput
+            label="Password"
+            name="password"
+            returnKeyType="done"
+            value={values.password}
+            error={errors.password ? true : false}
+            onChangeText={(val) => onChange("password", val)}
+            secureTextEntry
+          />
 
-        {Object.keys(errors).length > 0 && (
-          <View style={styles.errorContainer}>
-            <List.Section style={styles.errorSection}>
-              {Object.values(errors).map((value) => (
-                <List.Item
-                  key={value}
-                  title={value}
-                  titleStyle={styles.errorItem}
-                  titleNumberOfLines={10}
-                  left={() => (
-                    <List.Icon
-                      color={theme.colors.error}
-                      style={{ margin: 0 }}
-                      icon="alert-circle"
-                    />
-                  )}
-                />
-              ))}
-            </List.Section>
+          {Object.keys(errors).length > 0 && (
+            <View style={styles.errorContainer}>
+              <List.Section style={styles.errorSection}>
+                {Object.values(errors).map((value) => (
+                  <List.Item
+                    key={value}
+                    title={value}
+                    titleStyle={styles.errorItem}
+                    titleNumberOfLines={10}
+                    left={() => (
+                      <List.Icon
+                        color={theme.colors.error}
+                        style={{ margin: 0 }}
+                        icon="alert-circle"
+                      />
+                    )}
+                  />
+                ))}
+              </List.Section>
+            </View>
+          )}
+
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={onSubmit}
+            loading={loading ? true : false}
+          >
+            Login
+          </Button>
+
+          <View style={styles.row}>
+            <Text style={styles.label}>Don’t have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.link}>Register</Text>
+            </TouchableOpacity>
           </View>
-        )}
-
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={onSubmit}
-          loading={loading ? true : false}
-        >
-          Login
-        </Button>
-
-        <View style={styles.row}>
-          <Text style={styles.label}>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.link}>Register</Text>
-          </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </Background>
   );
 };

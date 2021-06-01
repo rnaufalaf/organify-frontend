@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import * as ImagePicker from "expo-image-picker";
+import React, { useState, useContext, useEffect } from "react";
+import ImagePicker from "react-native-image-crop-picker";
 import {
   View,
   StyleSheet,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { useTheme, Button } from "react-native-paper";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+
+import { storage } from "../../../firebase";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
@@ -32,12 +34,69 @@ import { AuthContext } from "../../../context/auth";
 const EditSellerProductScreen = (props) => {
   const productId = props.route.params.product.id;
   const productData = props.route.params.product;
+  const productImg = props.route.params.product.images;
+  const photos = props.route.params.photos;
   const [errors, setErrors] = useState({});
   const [isSaved, setSave] = useState(false);
+  const [photosExists, setPhotosExists] = useState([]);
+  const [image, setImage] = useState([]);
 
   const context = useContext(AuthContext);
 
   console.log("edit product", props);
+  console.log("sini jon", photos);
+
+  if (productImg) {
+    productImg.forEach((img) => {
+      image.push({
+        downloadUrl: img.downloadUrl,
+      });
+    });
+  }
+
+  console.log("lol", image);
+
+  useEffect(() => {
+    if (photos) {
+      photos.forEach((pic) => {
+        uploadImage(pic.uri, `product-${new Date().toISOString()}`)
+          .then(() => {
+            console.log("Success");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    }
+  }, [photos]);
+
+  const uploadImage = async (uri, imageName) => {
+    if (uri) {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const uploadTask = storage
+        .ref(`images/productImg/${imageName}`)
+        .put(blob);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {},
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref("images/productImg")
+            .child(imageName)
+            .getDownloadURL()
+            .then((url) => {
+              // setImages(url);
+              setImage((img) => [...img, url]);
+              console.log("test", url);
+            });
+        }
+      );
+    }
+  };
 
   let productObj;
 
@@ -73,70 +132,8 @@ const EditSellerProductScreen = (props) => {
 
   const { colors } = useTheme();
 
-  const [image, setImage] = useState(
-    "https://react.semantic-ui.com/images/avatar/large/molly.png"
-  );
-
-  const openCamera = async () => {
-    let result = await ImagePicker.launchCameraAsync();
-
-    if (!result.cancelled) {
-      uploadImage(result.uri, `avatar-${new Date().toISOString()}`)
-        .then(() => {
-          console.log("Success");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      uploadImage(result.uri, `image-${new Date().toISOString()}`)
-        .then(() => {
-          console.log("Success");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const uploadImage = async (uri, imageName) => {
-    if (uri) {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const uploadTask = storage.ref(`images/image/${imageName}`).put(blob);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {},
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images/image")
-            .child(imageName)
-            .getDownloadURL()
-            .then((url) => {
-              setImage(url);
-              console.log("this is the avatar " + url);
-            });
-        }
-      );
-    }
-  };
-
   const [updateProduct] = useMutation(UPDATE_PRODUCT, {
-    update(_, { data: { updateProduct: product } }) {
+    update(_, { data: { updateProduct: updatedProduct } }) {
       setSave(true);
       setErrors({});
       Toast.show({
@@ -155,19 +152,8 @@ const EditSellerProductScreen = (props) => {
 
   console.log(context.user);
   const [deleteProduct] = useMutation(DELETE_PRODUCT, {
-    update(proxy, result) {
-      const data = proxy.readQuery({
-        query: GET_SELLER_PRODUCTS,
-        variables: { userId: context.user.id },
-      });
-      proxy.writeQuery({
-        query: GET_SELLER_PRODUCTS,
-        data: {
-          getSellerProducts: data.getSellerProducts.filter(
-            (p) => p.id !== productId
-          ),
-        },
-      });
+    update() {
+      props.refetchCatalog();
     },
     variables: { productId: productId },
   });
@@ -180,6 +166,7 @@ const EditSellerProductScreen = (props) => {
     values.price = parseInt(values.price);
     values.stock = parseInt(values.stock);
     values.weight = parseInt(values.weight);
+    // values.images.downloadUrl = image;
     updateProduct();
   }
   console.log("ini values", values);
@@ -190,10 +177,10 @@ const EditSellerProductScreen = (props) => {
         <Text style={styles.panelTitle}>Upload Photo</Text>
         <Text style={styles.panelSubtitle}>Choose Your Image Pictures</Text>
       </View>
-      <TouchableOpacity style={styles.panelButton} onPress={openCamera}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton} onPress={pickImage}>
+      <TouchableOpacity
+        style={styles.panelButton}
+        onPress={() => props.navigation.navigate("Image Picker")}
+      >
         <Text style={styles.panelButtonTitle}>Choose From Library</Text>
       </TouchableOpacity>
       <TouchableOpacity

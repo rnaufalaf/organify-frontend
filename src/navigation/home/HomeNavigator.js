@@ -4,6 +4,7 @@ import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import ProductContainer from "../../screens/product//ProductContainer";
 import ProductDetailScreen from "../../screens/product/ProductDetailScreen";
 import CartScreen from "../../screens/cart/CartScreen";
+import CheckoutScreen from "../../screens/cart/CheckoutScreen";
 import ChatNavigator from "../chat/ChatNavigator";
 import StoreCatalogScreen from "../../screens/product/StoreCatalogScreen";
 
@@ -30,6 +31,13 @@ export default function HomeNavigator() {
       <Home.Screen
         name="Cart"
         component={CartScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Home.Screen
+        name="Checkout"
+        component={CheckoutScreen}
         options={{
           headerShown: false,
         }}

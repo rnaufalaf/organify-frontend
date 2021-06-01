@@ -25,3 +25,12 @@ export const setShippingOrder = (filter) => (dispatch) => {
     payload: filter,
   });
 };
+
+export const setOrderIdsWillBePaid = (orderIds) => (dispatch) => {
+  dispatch({
+    type: ADD_ORDER_IDS,
+    payload: {
+      orderIds: orderIds,
+    },
+  });
+};

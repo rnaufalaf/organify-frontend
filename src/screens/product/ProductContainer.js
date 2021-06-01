@@ -18,7 +18,7 @@ var { height } = Dimensions.get("window");
 
 const ProductContainer = (props) => {
   let data;
-  // const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [productsFiltered, setProductsFiltered] = useState([]);
   const [focus, setFocus] = useState();
   const [productsCtg, setProductsCtg] = useState([]);
@@ -27,32 +27,21 @@ const ProductContainer = (props) => {
   const { loading, data: productData } = useQuery(GET_PRODUCTS);
   const { getProducts: productList } = productData ? productData : [];
 
-  console.log(productList);
-
-  // useEffect(() => {
-  //   // setProducts(data);
-  //   // setProductsFiltered(data);
-  //   // // setProductsCtg(data);
-  //   // setActive(-1);
-  //   // setInitialState(data);
-
-  //   return () => {
-  //     setProducts([]);
-  //     setProductsFiltered([]);
-  //     setFocus();
-  //     // setCategories([]);
-  //     setActive();
-  //     setInitialState();
-  //   };
-  // }, []);
+  useEffect(() => {
+    setProducts(productList);
+    setProductsFiltered(productList);
+    // setProductsCtg(data);
+    setActive(-1);
+    setInitialState(productList);
+  }, []);
 
   // Search
 
-  // const searchProduct = (text) => {
-  //   setProductsFiltered(
-  //     products.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
-  //   );
-  // };
+  const searchProduct = (text) => {
+    setProductsFiltered(
+      products.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
+    );
+  };
 
   const openList = () => {
     setFocus(true);
@@ -90,14 +79,14 @@ const ProductContainer = (props) => {
       </Card>
       {focus == true ? (
         <View>
-          {/* {productList.map((productsFiltered) => {
+          {productList.map((productsFiltered) => {
             return (
               <SearchedProducts
                 navigation={props.navigation}
                 productsFiltered={productsFiltered}
               />
             );
-          })} */}
+          })}
         </View>
       ) : (
         <ScrollView

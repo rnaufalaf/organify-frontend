@@ -12,7 +12,7 @@ import {
 var { width } = Dimensions.get("window");
 
 const SellerProductCard = (props) => {
-  const { product } = props;
+  const { product, refetchCatalog } = props;
 
   console.log("props seller", props);
 
@@ -22,6 +22,7 @@ const SellerProductCard = (props) => {
       onPress={() =>
         props.navigation.navigate("Edit Seller Product", {
           product: props.product,
+          refetchCatalog: props.refetchCatalog,
         })
       }
     >

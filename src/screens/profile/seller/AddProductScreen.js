@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useMutation } from "@apollo/react-hooks";
+import { storage } from "../../../firebase";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
@@ -67,7 +68,7 @@ const AddProductScreen = (props) => {
     });
 
     if (!result.cancelled) {
-      uploadImage(result.uri, `avatar-${new Date().toISOString()}`)
+      uploadImage(result.uri, `product-${new Date().toISOString()}`)
         .then(() => {
           console.log("Success");
         })
@@ -81,7 +82,7 @@ const AddProductScreen = (props) => {
     if (uri) {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const uploadTask = storage.ref(`images/avatar/${imageName}`).put(blob);
+      const uploadTask = storage.ref(`images/products/${imageName}`).put(blob);
       uploadTask.on(
         "state_changed",
         (snapshot) => {},
@@ -90,7 +91,7 @@ const AddProductScreen = (props) => {
         },
         () => {
           storage
-            .ref("images/avatar")
+            .ref("images/products")
             .child(imageName)
             .getDownloadURL()
             .then((url) => {
@@ -100,19 +101,6 @@ const AddProductScreen = (props) => {
         }
       );
     }
-    // const response = await fetch(uri);
-    // console.log("masuk uploadimages");
-    // const blob = await response.blob();
-
-    // var ref = storage
-    //   .ref()
-    //   .child("images/" + imageName)
-    //   .getDownloadURL()
-    //   .then((url) => {
-    //     setAvatar(url);
-    //     console.log(url);
-    //   });
-    // return ref.put(blob);
   };
 
   const [submitProduct, { loading }] = useMutation(ADD_PRODUCT, {

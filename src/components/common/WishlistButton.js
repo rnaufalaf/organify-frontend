@@ -29,7 +29,7 @@ function WishlistButton({ user, product }) {
 
   const [wishlistProduct] = useMutation(ADD_PRODUCT_TO_WISHLIST, {
     variables: { productId: product.id },
-    update(proxy, result) {
+    update() {
       refetch();
       // console.log("ini result", result.data);
       // const data = proxy.readQuery({

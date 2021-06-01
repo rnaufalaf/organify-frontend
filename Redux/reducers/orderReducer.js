@@ -2,6 +2,7 @@ import {
   CHECKOUT_ORDER,
   SET_SHIPPING_ORDER,
   ADD_ORDER,
+  ADD_ORDER_IDS,
 } from "../actions/types";
 import { initialOrderList } from "../../src/util/const";
 
@@ -20,6 +21,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isAddOrder: action.payload.isAddOrder,
+      };
+    case ADD_ORDER_IDS:
+      return {
+        ...state,
+        orderIds: action.payload.orderIds,
       };
     case SET_SHIPPING_ORDER:
       return {

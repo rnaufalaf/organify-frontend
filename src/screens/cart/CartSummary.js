@@ -17,7 +17,7 @@ const CartSummary = (props) => {
   let total = 0;
   let amountCounter = 0;
 
-  console.log(props);
+  console.log("props here", props);
 
   useEffect(() => {
     props.carts.forEach((cart) => {
@@ -34,28 +34,53 @@ const CartSummary = (props) => {
   }, [props.carts, props.isChange]);
 
   function checkout() {
-    props.navigation.navigate();
+    props.navigation.navigate("Checkout");
   }
 
   return (
     <View>
-      <Divider></Divider>
+      <Divider style={{ backgroundColor: "black" }} />
       <Card>
         <Card.Content>
-          <Title>Cart Summary</Title>
-          <View style={styles.bottomContainer}>
+          <Title
+            style={{
+              fontWeight: "bold",
+              fontSize: 25,
+              color: "green",
+              textAlign: "center",
+            }}
+          >
+            Cart Summary
+          </Title>
+          <View style={{ marginVertical: 10 }}>
             <View style={{ flexDirection: "column" }}>
-              <View style={{ paddingLeft: 5, flexDirection: "row" }}>
-                <Text>Sub total : </Text>
-                <Text style={styles.price}>
+              <View style={{ marginVertical: 5, flexDirection: "row" }}>
+                <Text style={styles.text}>Sub total : </Text>
+                <Text
+                  style={
+                    ([styles.price],
+                    {
+                      right: -235,
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      color: "green",
+                    })
+                  }
+                >
                   Rp {currencyIdrConverter(subTotal, 0, ".", ",")}
                 </Text>
               </View>
-              <View style={{ paddingLeft: 5, flexDirection: "row" }}>
-                <Text>Sub total : ({amountOfProducts} products) </Text>
+              <View style={{ marginVertical: 5, flexDirection: "row" }}>
+                <Text style={styles.text}>Total Products : </Text>
+                <Text style={([styles.text], { right: -200, fontSize: 17 })}>
+                  ({amountOfProducts} products){" "}
+                </Text>
               </View>
             </View>
           </View>
+          <Button mode="contained" onPress={checkout}>
+            Checkout
+          </Button>
         </Card.Content>
       </Card>
     </View>
@@ -79,10 +104,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   price: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "bold",
-    margin: 20,
     color: "green",
+  },
+  text: {
+    fontSize: 17,
   },
 });
 

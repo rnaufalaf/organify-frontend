@@ -7,11 +7,15 @@ import SellerProductCard from "./SellerProductCard";
 var { width } = Dimensions.get("window");
 
 const SellerProductList = (props) => {
-  const { product } = props;
+  const { product, refetchCatalog } = props;
   console.log("list props", props);
   return (
     <View style={{ flexDirection: "column", width: width / 2 }}>
-      <SellerProductCard product={product} navigation={props.navigation} />
+      <SellerProductCard
+        product={product}
+        navigation={props.navigation}
+        refetchCatalog={refetchCatalog}
+      />
     </View>
   );
 };

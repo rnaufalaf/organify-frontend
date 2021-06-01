@@ -9,17 +9,18 @@ import {
 import { Left, Right, Body, ListItem } from "native-base";
 import { IconButton } from "react-native-paper";
 import { Avatar, Card } from "react-native-paper";
-import { useMutation } from "@apollo/react-hooks";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import NumericInput from "react-native-numeric-input";
 
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { checkoutItems } from "../../../Redux/actions/orderAction";
+
 import {
   GET_PRODUCTS_CART,
   EDIT_PRODUCTS_IN_CART,
   DELETE_PRODUCT_FROM_CART,
 } from "../../util/graphql";
+import { useMutation } from "@apollo/react-hooks";
 
 const CartByProducts = (props) => {
   const [productQty, setProductQty] = useState(props.product.productQty);
@@ -46,7 +47,7 @@ const CartByProducts = (props) => {
               ...productInCartObj,
               productQty: parseInt(productQty),
             };
-            console.log("isi props " + props);
+            console.log("obj" + productInCartObj);
             return;
           }
         });
@@ -59,18 +60,8 @@ const CartByProducts = (props) => {
   }, [productQty]);
 
   const [deleteProductFromCart] = useMutation(DELETE_PRODUCT_FROM_CART, {
-    update(proxy, result) {
-      const data = proxy.readQuery({
-        query: GET_PRODUCTS_CART,
-      });
-      proxy.writeQuery({
-        query: GET_PRODUCTS_CART,
-        data: {
-          getProductsCart: data.getProductsCart.filter(
-            (cart) => cart.id !== props.product.id
-          ),
-        },
-      });
+    update() {
+      props.refetchCartQuery();
     },
     variables: { cartId: props.product.id },
   });
@@ -81,21 +72,8 @@ const CartByProducts = (props) => {
       productQty: productQty,
       isChecked: props.product.isChecked,
     },
-    update(proxy, result) {
-      console.log("ini result", result.data);
-      const data = proxy.readQuery({
-        query: GET_PRODUCTS_CART,
-      });
-
-      proxy.writeQuery({
-        query: GET_PRODUCTS_CART,
-        data: {
-          getProductsCart: [
-            result.data.editProductsInCart,
-            ...data.getProductsCart,
-          ],
-        },
-      });
+    update() {
+      props.refetchCartQuery();
       setEditProductQty(false);
     },
     onError(err) {

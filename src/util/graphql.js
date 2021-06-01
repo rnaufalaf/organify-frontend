@@ -285,6 +285,7 @@ export const UPDATE_PRODUCT = gql`
     $stock: Int!
     $weight: Int!
     $productId: ID!
+    $images: [ImageInput]!
   ) {
     updateProduct(
       productId: $productId
@@ -297,7 +298,7 @@ export const UPDATE_PRODUCT = gql`
         price: $price
         stock: $stock
         weight: $weight
-        images: [{ downloadUrl: "" }]
+        images: $images
       }
     ) {
       id
@@ -413,6 +414,7 @@ export const EDIT_PRODUCTS_IN_CART = gql`
       productQty: $productQty
       isChecked: $isChecked
     ) {
+      id
       productQty
       createdAt
       isChecked
@@ -431,6 +433,76 @@ export const ADD_CHECKLIST_TO_CART = gql`
     addChecklistToCart(
       checkedCart: { productIds: $productIds, isChecked: $isChecked }
     )
+  }
+`;
+
+export const GET_CHECKOUT_DATA = gql`
+  query ($userId: ID!) {
+    getCheckoutData {
+      id
+      product {
+        id
+        weight
+        name
+        price
+        stock
+        images {
+          downloadUrl
+        }
+        user {
+          id
+          seller {
+            id
+            username
+          }
+          address {
+            cityName
+            cityId
+            district
+            postalCode
+            detail
+          }
+        }
+      }
+      user {
+        id
+        email
+        phone
+        address {
+          cityName
+          postalCode
+          detail
+        }
+        buyer {
+          id
+          name
+        }
+        seller {
+          id
+          username
+        }
+      }
+      isChecked
+      productQty
+      createdAt
+    }
+    getUser(userId: $userId) {
+      id
+      email
+      phone
+      address {
+        cityName
+        cityId
+        district
+        postalCode
+        detail
+      }
+      balance
+      buyer {
+        id
+        name
+      }
+    }
   }
 `;
 
@@ -476,6 +548,7 @@ export const GET_PRODUCTS_CART = gql`
         price
         stock
         images {
+          id
           downloadUrl
         }
         user {
@@ -500,6 +573,87 @@ export const GET_PRODUCTS_CART = gql`
       isChecked
       productQty
       createdAt
+    }
+  }
+`;
+
+export const GET_SHIPPING_COST = gql`
+  query (
+    $origin: String!
+    $destination: String!
+    $weight: Int!
+    $courier: String!
+  ) {
+    getCosts(
+      costInput: {
+        origin: $origin
+        destination: $destination
+        weight: $weight
+        courier: $courier
+      }
+    ) {
+      code
+      name
+      costs {
+        service
+        description
+        cost {
+          value
+          etd
+          note
+        }
+      }
+    }
+  }
+`;
+
+export const ADD_ORDER = gql`
+  mutation addOrder(
+    $products: [OrderProductInput]!
+    $state: String!
+    $sellerUsername: String!
+    $shipping: OrderShippingInput!
+    $productInCartIds: [ID]!
+  ) {
+    addOrder(
+      addOrderInput: {
+        products: $products
+        state: { stateType: $state }
+        shipping: $shipping
+        sellerUsername: $sellerUsername
+      }
+      productInCartIds: $productInCartIds
+    ) {
+      id
+      state {
+        stateType
+        createdAt
+        deadline
+      }
+      shipping {
+        courierName
+      }
+    }
+  }
+`;
+
+export const UPDATE_ORDER = gql`
+  mutation updateOrder($orderId: ID!, $state: String!) {
+    updateOrder(
+      oderId: $orderId
+      updateOrderInput: { state: { stateType: $state } }
+    ) {
+      id
+      state {
+        stateType
+        createdAt
+        deadline
+      }
+      logs {
+        stateType
+        succededAt
+        executedAt
+      }
     }
   }
 `;
@@ -544,7 +698,7 @@ export const MESSAGES_SUBSCRIPTION = gql`
       content
       sentAt
       user
-      item {
+      product {
         id
         name
         price
@@ -571,6 +725,15 @@ export const ADD_MESSAGE = gql`
         downloadUrl
       }
       sentAt
+    }
+  }
+`;
+
+export const CREATE_PAYMENT_QUERY = gql`
+  query makePayment($createPaymentInput: CreatePaymentInput) {
+    createPayment(createPaymentInput: $createPaymentInput) {
+      token
+      redirect_url
     }
   }
 `;
