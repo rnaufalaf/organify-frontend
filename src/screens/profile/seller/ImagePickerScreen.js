@@ -11,6 +11,10 @@ import { ImageBrowser } from "expo-image-picker-multiple";
 
 import { storage } from "../../../firebase";
 
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { uploadMultipleImage } from "../../../../Redux/actions/imagePickerAction";
+
 const ImagePickerScreen = (props) => {
   const getHeaderLoader = () => (
     <ActivityIndicator size="small" color={"#0580FF"} />
@@ -24,7 +28,6 @@ const ImagePickerScreen = (props) => {
 
     callback
       .then(async (photos) => {
-        console.log("sampe sini", photos);
         const cPhotos = [];
         for (let photo of photos) {
           cPhotos.push({
@@ -32,9 +35,9 @@ const ImagePickerScreen = (props) => {
             name: photo.filename,
             type: "image/jpg",
           });
-          console.log(":)", cPhotos);
-          props.navigation.navigate("Edit Seller Product", { photos: cPhotos });
         }
+        props.uploadMultipleImage(cPhotos);
+        props.navigation.goBack(null);
         // if (cPhotos) {
         //   cPhotos.forEach((pic) => {
         //     uploadImage(pic.uri, `product-${new Date().toISOString()}`)
@@ -119,8 +122,6 @@ const ImagePickerScreen = (props) => {
   );
 };
 
-export default ImagePickerScreen;
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
@@ -148,3 +149,15 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
 });
+
+ImagePickerScreen.propTypes = {
+  uploadMultipleImage: PropTypes.func.isRequired,
+  photos: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  photos: state.imagePicker.photos,
+});
+
+export default connect(mapStateToProps, { uploadMultipleImage })(
+  ImagePickerScreen
+);

@@ -32,3 +32,7 @@ export const initialOrderList = {
   isChecked: false,
   orderIds: [],
 };
+
+export const initialPhotos = {
+  photos: undefined,
+};

@@ -106,7 +106,7 @@ const SellerProfileScreen = (props) => {
             </View>
             <TouchableOpacity
               style={styles.infoBox}
-              onPress={() => props.navigation.navigate("Messages Screen")}
+              onPress={() => props.navigation.navigate("Chat")}
             >
               <Title>12</Title>
               <Caption>Messages</Caption>

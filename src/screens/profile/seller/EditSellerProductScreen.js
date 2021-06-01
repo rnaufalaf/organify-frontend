@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-import ImagePicker from "react-native-image-crop-picker";
 import {
   View,
   StyleSheet,
@@ -9,14 +8,15 @@ import {
   KeyboardAvoidingView,
   TextInput,
 } from "react-native";
-import { useTheme, Button } from "react-native-paper";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useTheme, IconButton } from "react-native-paper";
+import { useMutation } from "@apollo/react-hooks";
 
 import { storage } from "../../../firebase";
 
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Feather from "react-native-vector-icons/Feather";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { uploadMultipleImage } from "../../../../Redux/actions/imagePickerAction";
+import { CommonActions } from "@react-navigation/native";
 
 import Toast from "react-native-toast-message";
 
@@ -24,51 +24,16 @@ import BottomSheet from "reanimated-bottom-sheet";
 import Animated from "react-native-reanimated";
 
 import { useForm } from "../../../util/hooks";
-import {
-  UPDATE_PRODUCT,
-  DELETE_PRODUCT,
-  GET_SELLER_PRODUCTS,
-} from "../../../util/graphql";
+import { UPDATE_PRODUCT, DELETE_PRODUCT } from "../../../util/graphql";
 import { AuthContext } from "../../../context/auth";
 
 const EditSellerProductScreen = (props) => {
   const productId = props.route.params.product.id;
   const productData = props.route.params.product;
-  const productImg = props.route.params.product.images;
-  const photos = props.route.params.photos;
   const [errors, setErrors] = useState({});
-  const [isSaved, setSave] = useState(false);
-  const [photosExists, setPhotosExists] = useState([]);
   const [image, setImage] = useState([]);
 
-  const context = useContext(AuthContext);
-
-  console.log("edit product", props);
-  console.log("sini jon", photos);
-
-  if (productImg) {
-    productImg.forEach((img) => {
-      image.push({
-        downloadUrl: img.downloadUrl,
-      });
-    });
-  }
-
-  console.log("lol", image);
-
-  useEffect(() => {
-    if (photos) {
-      photos.forEach((pic) => {
-        uploadImage(pic.uri, `product-${new Date().toISOString()}`)
-          .then(() => {
-            console.log("Success");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
-    }
-  }, [photos]);
+  console.log("edit seller", props.photos);
 
   const uploadImage = async (uri, imageName) => {
     if (uri) {
@@ -92,6 +57,7 @@ const EditSellerProductScreen = (props) => {
               // setImages(url);
               setImage((img) => [...img, url]);
               console.log("test", url);
+              setImageCount(image.length);
             });
         }
       );
@@ -111,7 +77,6 @@ const EditSellerProductScreen = (props) => {
       category: productData.category,
       stock: productData.stock,
       productId: productId,
-      //   images: productData.images
     };
   } else {
     productObj = {
@@ -124,7 +89,6 @@ const EditSellerProductScreen = (props) => {
       category: "",
       stock: 0,
       productId: productId,
-      // images: ""
     };
   }
 
@@ -141,6 +105,7 @@ const EditSellerProductScreen = (props) => {
         type: "success",
         text1: "Product Updated",
       });
+      props.navigation.dispatch(CommonActions.goBack());
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
@@ -150,7 +115,6 @@ const EditSellerProductScreen = (props) => {
     variables: values,
   });
 
-  console.log(context.user);
   const [deleteProduct] = useMutation(DELETE_PRODUCT, {
     update() {
       props.refetchCatalog();
@@ -161,15 +125,33 @@ const EditSellerProductScreen = (props) => {
   function productDelete() {
     deleteProduct();
   }
-
   function editProduct() {
+    props.photos.forEach((pic) => {
+      uploadImage(pic.uri, `product-${new Date().toISOString()}`)
+        .then(() => {
+          console.log("Success");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
     values.price = parseInt(values.price);
     values.stock = parseInt(values.stock);
     values.weight = parseInt(values.weight);
-    // values.images.downloadUrl = image;
-    updateProduct();
   }
-  console.log("ini values", values);
+  useEffect(() => {
+    console.log(image.length, "here");
+    if (props.photos && image.length == props.photos.length) {
+      let downloadUrlImages = [];
+      image.forEach((img) => {
+        downloadUrlImages.push({
+          downloadUrl: img,
+        });
+      });
+      values.images = downloadUrlImages;
+      updateProduct();
+    }
+  }, [image]);
 
   const renderInner = () => (
     <View style={styles.panel}>
@@ -225,48 +207,61 @@ const EditSellerProductScreen = (props) => {
           opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
         }}
       >
-        <View
-          style={{
-            alignItems: "center",
-            marginBottom: 10,
-          }}
-        >
-          <TouchableOpacity onPress={() => bottomSheet.current.snapTo(0)}>
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                }}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://react.semantic-ui.com/images/avatar/large/molly.png",
+        {props.photos ? (
+          <View
+            style={{
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <TouchableOpacity onPress={() => bottomSheet.current.snapTo(0)}>
+              {props.photos.map((pic) => (
+                <View
+                  style={{
+                    height: 100,
+                    width: 100,
+                    borderRadius: 15,
+                    flexDirection: "column",
                   }}
-                  style={{ height: 100, width: 100 }}
-                  imageStyle={{ borderRadius: 15 }}
-                ></ImageBackground>
-              </View>
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                  paddingHorizontal: 10,
-                }}
-              >
-                <ImageBackground
-                  source={{
-                    uri: "https://react.semantic-ui.com/images/avatar/large/molly.png",
+                >
+                  <ImageBackground
+                    source={{
+                      uri: pic.uri,
+                    }}
+                    style={{ height: 100, width: 100 }}
+                    imageStyle={{ borderRadius: 15 }}
+                  ></ImageBackground>
+                </View>
+              ))}
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <TouchableOpacity onPress={() => bottomSheet.current.snapTo(0)}>
+              <View style={{ flexDirection: "row" }}>
+                <View
+                  style={{
+                    height: 100,
+                    width: 100,
+                    borderRadius: 15,
                   }}
-                  style={{ height: 100, width: 100 }}
-                  imageStyle={{ borderRadius: 15 }}
-                ></ImageBackground>
+                >
+                  <IconButton
+                    icon="plus"
+                    color="gray"
+                    size={30}
+                    style={{ alignSelf: "center" }}
+                  />
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={{ paddingVertical: 20 }}>
           <Text style={{ fontSize: 20 }}>Product Details</Text>
         </View>
@@ -427,8 +422,6 @@ const EditSellerProductScreen = (props) => {
   );
 };
 
-export default EditSellerProductScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -521,3 +514,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 });
+
+EditSellerProductScreen.propTypes = {
+  uploadMultipleImage: PropTypes.func.isRequired,
+  photos: PropTypes.array,
+};
+const mapStateToProps = (state) => ({
+  photos: state.imagePicker.photos,
+});
+
+export default connect(mapStateToProps, { uploadMultipleImage })(
+  EditSellerProductScreen
+);
