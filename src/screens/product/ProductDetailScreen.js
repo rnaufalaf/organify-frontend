@@ -87,7 +87,7 @@ const ProductDetailScreen = (props) => {
   const { getProductInCart: productInCart } = userCart ? userCart : [];
   let productAmountInCart = 0;
 
-  if (productInCart) {
+  if (!loading && productInCart) {
     productAmountInCart = productInCart.productQty;
   }
   const AnimatedView = Animated.View;

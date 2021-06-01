@@ -564,7 +564,6 @@ export const ADD_MESSAGE = gql`
       }
     ) {
       id
-      user
       content
       images {
         id
