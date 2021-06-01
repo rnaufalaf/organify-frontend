@@ -16,30 +16,12 @@ import {
 
 import { GET_USER_CHATS, ADD_MESSAGE } from "../../util/graphql";
 import { AuthContext } from "../../context/auth";
-import { useMutation, useQuery } from "@apollo/react-hooks";
-import { useForm } from "../../util/hooks";
+import { useQuery } from "@apollo/react-hooks";
 
 const ChatScreen = (props) => {
   const { user } = useContext(AuthContext);
-  const [errors, setErrors] = useState({});
   const { loading, data } = useQuery(GET_USER_CHATS);
   const { getChats: chats } = data ? data : [];
-  const [currentChat, setCurrentChat] = useState({
-    id: "",
-    users: [{ seller: { username: "" } }],
-  });
-  const [isChange, setIsChange] = useState(false);
-
-  // const setChat = (chat) => {
-  //   setCurrentChat(chat);
-  //   setIsChange(true);
-  // };
-  // if (
-  //   props.selectedChat.id &&
-  //   currentChat.id !== props.selectedChat.id &&
-  //   !isChange
-  // )
-
   const receiver = (users) => {
     let userReceiver;
     if (users[0].id !== user.id) {
