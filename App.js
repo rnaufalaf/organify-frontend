@@ -25,14 +25,10 @@ import { theme } from "./src/constants/Theme";
 
 const httpLink = createHttpLink({
   // uri: "https://organify-graphql-backend.herokuapp.com/graphql",
-<<<<<<< HEAD
   uri: "http://192.168.100.4:1000/graphql",
   // uri: "http://192.168.13.101:1000/graphql",
   // uri: "http://192.168.207.101:1000/graphql",
   // uri: "http://192.168.163.101:1000/graphql",
-=======
-  uri: "http://192.168.1.67:1000/graphql",
->>>>>>> 66e9e0fd9ddbb2db079706ee6f5174b79eea0c50
 });
 
 const authLink = setContext(async () => {
