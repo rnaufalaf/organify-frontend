@@ -561,13 +561,26 @@ export const GET_PRODUCTS_CART = gql`
       }
       user {
         id
+        email
+        phone
+        address {
+          cityName
+          cityId
+          district
+          postalCode
+          detail
+        }
+        balance
         buyer {
           id
           name
+          avatar
         }
         seller {
           id
           username
+          avatar
+          description
         }
       }
       isChecked

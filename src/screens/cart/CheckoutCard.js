@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { StyleSheet } from "react-native";
 import { Card, Title } from "react-native-paper";
-import { ListItem, Item, Picker, Text } from "native-base";
+import { ListItem, List, Item, Picker, Text, Right, Left } from "native-base";
+import SelectPicker from "react-native-form-select-picker";
 import {
   GET_PRODUCTS_CART,
   GET_SHIPPING_COST,
@@ -50,13 +52,14 @@ const CheckoutCard = (props) => {
     courier: "tiki",
   };
 
-  const changeCourier = (_, { value }) => {
-    const courierSplit = value.split("");
+  const changeCourier = (value) => {
+    const courierSplit = value.split(" ");
     setCourier({
       code: courierSplit[0],
       service: courierSplit[1],
       amount: parseInt(courierSplit[2]),
     });
+    console.log("kurir", courier);
   };
 
   const [addOrder] = useMutation(ADD_ORDER, {
@@ -149,29 +152,18 @@ const CheckoutCard = (props) => {
             value: `${tikiCosts[0].code} ${cost.service} ${cost.cost[0].value}`,
             content: (
               <>
-                <Item picker style={[styles.pickerStyle]}>
-                  <Picker
-                    name="tiki"
-                    mode="dropdown"
-                    value={`${tikiCosts[0].code} ${cost.service} ${cost.cost[0].value}`}
-                    style={{ height: 20 }}
-                    onValueChange={(val) => handleChange(val)}
-                  >
-                    <Picker.Item
-                      label={
-                        tikiCosts[0].code +
-                        " - " +
-                        cost.service +
-                        " " +
-                        Rp +
-                        cost.cost[0].value
-                      }
-                      // value={
-                      //   city.type + " " + city.city_name + "-" + city.city_id
-                      // }
-                    />
-                  </Picker>
-                </Item>
+                <List>
+                  <ListItem>
+                    <Right>
+                      <Text> Rp{cost.cost[0].value}</Text>
+                    </Right>
+                  </ListItem>
+                  <ListItem>
+                    <Left>
+                      {tikiCosts[0].code} ({cost.service})
+                    </Left>
+                  </ListItem>
+                </List>
               </>
             ),
           },
@@ -188,29 +180,18 @@ const CheckoutCard = (props) => {
             value: `${jneCosts[0].code} ${cost.service} ${cost.cost[0].value}`,
             content: (
               <>
-                <Item picker style={[styles.pickerStyle]}>
-                  <Picker
-                    name="jne"
-                    mode="dropdown"
-                    value={`${jneCosts[0].code} ${cost.service} ${cost.cost[0].value}`}
-                    style={{ height: 20 }}
-                    onValueChange={(val) => handleChange(val)}
-                  >
-                    <Picker.Item
-                      label={
-                        jneCosts[0].code +
-                        " - " +
-                        cost.service +
-                        " " +
-                        Rp +
-                        cost.cost[0].value
-                      }
-                      // value={
-                      //   city.type + " " + city.city_name + "-" + city.city_id
-                      // }
-                    />
-                  </Picker>
-                </Item>
+                <List>
+                  <ListItem>
+                    <Right>
+                      <Text> Rp{cost.cost[0].value}</Text>
+                    </Right>
+                  </ListItem>
+                  <ListItem>
+                    <Left>
+                      {jneCosts[0].code} ({cost.service})
+                    </Left>
+                  </ListItem>
+                </List>
               </>
             ),
           },
@@ -221,25 +202,44 @@ const CheckoutCard = (props) => {
     cartCheckoutUI = (
       <Card>
         <Card.Content>
-          <Text>{props.productInCart[0].product.user.seller.username}</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {props.productInCart[0].product.user.seller.username}
+          </Text>
         </Card.Content>
         {props.productInCart &&
           props.productInCart.map((product, index) => (
             <ProductCheckoutCard key={index} product={product} />
           ))}
         <Card.Content>
-          <Title>Shipping</Title>
-          <Picker
-            onChange={changeCourier}
-            options={options}
-            placeholder="Shipping"
-          />
+          <SelectPicker
+            onValueChange={(value) => {
+              console.log("chosen courier", value), changeCourier(value);
+            }}
+            placeholder="Tap to choose your courier service"
+          >
+            {Object.values(options).map((val) => (
+              <SelectPicker.Item
+                label={val.text}
+                value={val.value}
+                key={val.key}
+              />
+            ))}
+          </SelectPicker>
         </Card.Content>
       </Card>
     );
   }
   return cartCheckoutUI;
 };
+
+const styles = StyleSheet.create({
+  pickerStyle: {
+    borderColor: "gainsboro",
+    alignSelf: "center",
+    flex: 1,
+    marginLeft: 5,
+  },
+});
 
 CheckoutCard.propTypes = {
   checkoutItems: PropTypes.func.isRequired,

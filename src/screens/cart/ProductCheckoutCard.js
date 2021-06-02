@@ -1,28 +1,49 @@
 import React from "react";
-import { Image, Text } from "react-native";
-import { Card } from "react-native-paper";
-import { Left, Body, Right } from "native-base";
+import { Image, Text, StyleSheet } from "react-native";
+import { Card, Avatar } from "react-native-paper";
+import { Left, Body, Right, View } from "native-base";
 
 const ProductCheckoutCard = ({ product }) => {
-  console.log(product);
+  console.log("productvalue", product);
   return (
     <>
       <Card>
-        <Card.Content style={{ flexDirection: "column" }}>
+        <Card.Content style={{ flexDirection: "row" }}>
           <Left>
-            <Image source={{ uri: product.product.images[0].downloadUrl }} />
+            <Avatar.Image
+              source={{ uri: product.product.images[0].downloadUrl }}
+            />
           </Left>
-          <Left style={{ flexDirection: "row" }}>
-            <Text>{product.product.name}</Text>
-            <Text>Rp. {product.product.price}</Text>
-            <Text>
-              {product.productQty} item (
-              {product.product.weight * product.productQty}) .gram
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={
+                ([styles.text],
+                { position: "relative", right: 50, top: 0, fontSize: 16 })
+              }
+            >
+              {product.product.name}
             </Text>
-          </Left>
+            <View style={{ flexDirection: "column" }}>
+              <Right>
+                <Text style={styles.text}> Rp. {product.product.price}</Text>
+                <Text style={styles.text}>
+                  {product.productQty} item{" "}
+                  {product.product.weight * product.productQty} gram
+                </Text>
+              </Right>
+            </View>
+          </View>
         </Card.Content>
       </Card>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    textAlign: "left",
+  },
+});
+
 export default ProductCheckoutCard;

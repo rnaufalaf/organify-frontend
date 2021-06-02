@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { Card, Button, Divider } from "react-native-paper";
 import { Item, Picker, Left, Body, Right, Container } from "native-base";
 
@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { checkoutItems } from "../../../Redux/actions/orderAction";
 import CheckoutCard from "./CheckoutCard";
+import CheckoutSummary from "./CheckoutSummary";
 
 const CheckoutScreen = (props) => {
   const context = useContext(AuthContext);
@@ -87,7 +88,7 @@ const CheckoutScreen = (props) => {
       }, {});
       checkoutUI = (
         <>
-          <View>
+          <ScrollView>
             <Card>
               <Card.Title
                 title="Checkout"
@@ -125,6 +126,7 @@ const CheckoutScreen = (props) => {
               <Card.Title
                 title="Products"
                 titleStyle={{
+                  textAlign: "left",
                   fontWeight: "bold",
                   color: "green",
                   fontSize: 25,
@@ -132,15 +134,22 @@ const CheckoutScreen = (props) => {
                 }}
               />
               <Card.Content>
-                  {group && Object.keys(group).map((key) => (
-                      <CheckoutCard key={key} productInCart={group[key]} user={user}/>
+                {group &&
+                  Object.keys(group).map((key) => (
+                    <CheckoutCard
+                      key={key}
+                      productInCart={group[key]}
+                      user={user}
+                    />
                   ))}
               </Card.Content>
             </Card>
-            <Card.Content>
-              
-            </Card.Content>
-          </View>
+            <Card>
+              <Card.Content>
+                <CheckoutSummary />
+              </Card.Content>
+            </Card>
+          </ScrollView>
         </>
       );
     }

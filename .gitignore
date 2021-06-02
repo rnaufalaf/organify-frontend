@@ -7,6 +7,7 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+*.watchman-2021.05.31.00/*
 web-build/
 
 # macOS

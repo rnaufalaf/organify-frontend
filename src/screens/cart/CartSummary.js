@@ -17,8 +17,6 @@ const CartSummary = (props) => {
   let total = 0;
   let amountCounter = 0;
 
-  console.log("props here", props);
-
   useEffect(() => {
     props.carts.forEach((cart) => {
       cart.productsInCart.forEach((productInCart) => {
@@ -29,8 +27,6 @@ const CartSummary = (props) => {
     });
     setAmountOfProducts(amountCounter);
     setSubTotal(total);
-
-    console.log("sini", amountCounter, total);
   }, [props.carts, props.isChange]);
 
   function checkout() {
