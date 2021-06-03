@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
+import { WebView } from "react-native-webview";
 import { Card, Divider, Button } from "react-native-paper";
 import { List, ListItem, Left, Right, Body } from "native-base";
 import PropTypes from "prop-types";
@@ -9,12 +10,18 @@ import { checkoutItems, setAddOrder } from "../../../Redux/actions/orderAction";
 import { currencyIdrConverter } from "../../util/extensions";
 import { View, Text, StyleSheet } from "react-native";
 
+import { CREATE_PAYMENT_QUERY } from "../../util/graphql";
+import { useQuery } from "@apollo/react-hooks";
+
 const CheckoutSummary = (props) => {
   const [subTotal, setSubTotal] = useState(0);
   const [amount, setAmount] = useState(0);
   const [shippingCost, setShippingCost] = useState(0);
   const [isCourierExists, setCourierExists] = useState(false);
   const [midtransItemList, setMidtransItemList] = useState([]);
+  const [userDetailList, setUserDetailList] = useState({});
+  const [transactionData, setTransactionData] = useState(false);
+  const [paymentInput, setPaymentInput] = useState({});
 
   let total = 0;
   let amountCounter = 0;
@@ -27,6 +34,17 @@ const CheckoutSummary = (props) => {
     console.log("adding order");
     props.setAddOrder(true);
   }
+
+  // useEffect(() => {
+  //   pay().then((data) => {
+  //     // get the response and save it to the state
+  //     setTransactions(data);
+  //     // checking if the order already paid or not
+  //     if (data.error_messages) {
+  //       alert("This Order ID has been paid");
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     props.carts.forEach((cart) => {
@@ -76,65 +94,11 @@ const CheckoutSummary = (props) => {
     setMidtransItemList(productItems.concat(courierItems));
   }, [props.isChange]);
 
-  async function pay() {
-    const optionConnect = {
-      clientKey: "Mid-client-xmrguN00WG4lTFIg",
-      urlMerchant: "http://organify.com/payment",
-    };
-
-    const transRequest = {
-      transactionId: "order-org",
-      totalAmount: subTotal + shippingCost,
-    };
-
-    const itemDetails = midtransItemList;
-
-    console.log("masuk item", midtransItemList);
-
-    const userDetail = {
-      fullName: props.carts[0].productsInCart[0].user.buyer.name,
-      email: props.carts[0].productsInCart[0].user.email,
-      phoneNumber: props.carts[0].productsInCart[0].user.phone,
-      userId: props.carts[0].productsInCart[0].user.id,
-      address: props.carts[0].productsInCart[0].user.address.detail,
-      city: props.carts[0].productsInCart[0].user.address.cityName,
-      country: "IDN",
-      zipCode: props.carts[0].productsInCart[0].user.address.postalCode,
-    };
-    console.log("masuk user", userDetail);
-
-    const optionColorTheme = {
-      primary: "#c51f1f",
-      primaryDark: "#1a4794",
-      secondary: "#1fce38",
-    };
-
-    const optionFont = {
-      defaultText: "open_sans_regular.ttf",
-      semiBoldText: "open_sans_semibold.ttf",
-      boldText: "open_sans_bold.ttf",
-    };
-
-    const callback = (res) => {
-      console.log(res);
-      addOrderAction();
-    };
-
-    PaymentGateway.checkOut(
-      optionConnect,
-      transRequest,
-      itemDetails,
-      userDetail,
-      optionColorTheme,
-      optionFont,
-      callback
-    );
-  }
-
-  const getButtonPayment = () => {
+  const pay = () => {
     let summaryUI;
     if (isCourierExists) {
-      const paymentInput = {
+      const url = "https://app.sandbox.midtrans.com/snap/v1/transactions";
+      const data = {
         grossAmount: subTotal + shippingCost,
         productDetails: midtransItemList,
         customerDetails: {
@@ -153,12 +117,13 @@ const CheckoutSummary = (props) => {
           },
         },
       };
+      setPaymentInput(data);
       summaryUI = (
         <Button
           labelStyle={{ color: "white" }}
           style={{ backgroundColor: "green" }}
           disabled={false}
-          onPress={pay}
+          onPress={initiatePayment}
         >
           Pay
         </Button>
@@ -172,6 +137,23 @@ const CheckoutSummary = (props) => {
     }
     return summaryUI;
   };
+  const initiatePayment = () => {
+    createPayment();
+  };
+  const [createPayment] = useQuery(CREATE_PAYMENT_QUERY, {
+    createPaymentInput: paymentInput,
+    update(result) {
+      const token = result.data.createPayment.token;
+      const redirect_url = result.data.createPayment.redirect_url;
+      console.log("midtrans token", token);
+      console.log("midtrans url", redirect_url);
+      props.navigation.navigate("Midtrans");
+    },
+    onError(err) {
+      console.log(err.graphQLErrors[0].extensions.exception.errors);
+    },
+  });
+
   return (
     <View>
       <ActivityIndicator color="#fff" size="large" />
@@ -220,7 +202,7 @@ const CheckoutSummary = (props) => {
             </Right>
           </List>
         </Card.Content>
-        <Card.Content>{getButtonPayment()}</Card.Content>
+        <Card.Content>{pay()}</Card.Content>
       </Card>
     </View>
   );

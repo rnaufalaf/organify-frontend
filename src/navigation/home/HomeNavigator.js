@@ -5,6 +5,7 @@ import ProductContainer from "../../screens/product//ProductContainer";
 import ProductDetailScreen from "../../screens/product/ProductDetailScreen";
 import CartScreen from "../../screens/cart/CartScreen";
 import CheckoutScreen from "../../screens/cart/CheckoutScreen";
+import ReactMidtransPopup from "../../screens/cart/ReactMidtransPopup";
 import ChatNavigator from "../chat/ChatNavigator";
 import StoreCatalogScreen from "../../screens/product/StoreCatalogScreen";
 
@@ -38,6 +39,13 @@ export default function HomeNavigator() {
       <Home.Screen
         name="Checkout"
         component={CheckoutScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Home.Screen
+        name="Midtrans"
+        component={ReactMidtransPopup}
         options={{
           headerShown: false,
         }}
