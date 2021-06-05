@@ -146,7 +146,7 @@ const CheckoutScreen = (props) => {
             </Card>
             <Card>
               <Card.Content>
-                <CheckoutSummary navigation={props.navigation} />
+                <CheckoutSummary navigation={props.navigation} user={user} />
               </Card.Content>
             </Card>
           </ScrollView>

@@ -653,7 +653,7 @@ export const ADD_ORDER = gql`
 export const UPDATE_ORDER = gql`
   mutation updateOrder($orderId: ID!, $state: String!) {
     updateOrder(
-      oderId: $orderId
+      orderId: $orderId
       updateOrderInput: { state: { stateType: $state } }
     ) {
       id
@@ -746,6 +746,7 @@ export const CREATE_PAYMENT_QUERY = gql`
     createPayment(createPaymentInput: $createPaymentInput) {
       token
       redirect_url
+      orderId
     }
   }
 `;

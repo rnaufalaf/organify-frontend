@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
-import { WebView } from "react-native-webview";
 import { Card, Divider, Button } from "react-native-paper";
-import { List, ListItem, Left, Right, Body } from "native-base";
+import { List, ListItem, Left, Right } from "native-base";
 import PropTypes from "prop-types";
-import PaymentGateway from "react-native-midtrans-payment";
 import { connect } from "react-redux";
 import { checkoutItems, setAddOrder } from "../../../Redux/actions/orderAction";
 import { currencyIdrConverter } from "../../util/extensions";
 import { View, Text, StyleSheet } from "react-native";
 
 import { CREATE_PAYMENT_QUERY } from "../../util/graphql";
-import { useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 
 const CheckoutSummary = (props) => {
   const [subTotal, setSubTotal] = useState(0);
@@ -19,16 +17,14 @@ const CheckoutSummary = (props) => {
   const [shippingCost, setShippingCost] = useState(0);
   const [isCourierExists, setCourierExists] = useState(false);
   const [midtransItemList, setMidtransItemList] = useState([]);
-  const [userDetailList, setUserDetailList] = useState({});
-  const [transactionData, setTransactionData] = useState(false);
   const [paymentInput, setPaymentInput] = useState({});
-
   let total = 0;
   let amountCounter = 0;
   let shippingCostCounter = 0;
   let isExistsCourierList = [];
   let productItems = [];
   let courierItems = [];
+  let dataTemp;
 
   function addOrderAction() {
     console.log("adding order");
@@ -98,7 +94,7 @@ const CheckoutSummary = (props) => {
     let summaryUI;
     if (isCourierExists) {
       const url = "https://app.sandbox.midtrans.com/snap/v1/transactions";
-      const data = {
+      let uData = {
         grossAmount: subTotal + shippingCost,
         productDetails: midtransItemList,
         customerDetails: {
@@ -117,13 +113,16 @@ const CheckoutSummary = (props) => {
           },
         },
       };
-      setPaymentInput(data);
+      dataTemp = uData;
+
       summaryUI = (
         <Button
           labelStyle={{ color: "white" }}
           style={{ backgroundColor: "green" }}
           disabled={false}
-          onPress={initiatePayment}
+          onPress={() => {
+            addOrderAction(), setPaymentInput(dataTemp), initiatePayment();
+          }}
         >
           Pay
         </Button>
@@ -137,22 +136,45 @@ const CheckoutSummary = (props) => {
     }
     return summaryUI;
   };
+
   const initiatePayment = () => {
     createPayment();
   };
-  const [createPayment] = useQuery(CREATE_PAYMENT_QUERY, {
-    createPaymentInput: paymentInput,
-    update(result) {
-      const token = result.data.createPayment.token;
-      const redirect_url = result.data.createPayment.redirect_url;
-      console.log("midtrans token", token);
-      console.log("midtrans url", redirect_url);
-      props.navigation.navigate("Midtrans");
-    },
-    onError(err) {
-      console.log(err.graphQLErrors[0].extensions.exception.errors);
-    },
-  });
+
+  console.log("the payment", paymentInput);
+  // const [createPayment] = useQuery(CREATE_PAYMENT_QUERY, {
+  //   createPaymentInput: paymentInput,
+  //   update(result) {
+  //     const token = result.data.createPayment.token;
+  //     const redirect_url = result.data.createPayment.redirect_url;
+  //     console.log("midtrans token", token);
+  //     console.log("midtrans url", redirect_url);
+  //     props.navigation.navigate("Midtrans");
+  //   },
+  //   onError(err) {
+  //     console.log(err.graphQLErrors[0].extensions.exception.errors);
+  //   },
+  // });
+
+  const [createPayment, { loading, data }] = useLazyQuery(
+    CREATE_PAYMENT_QUERY,
+    {
+      variables: {
+        createPaymentInput: paymentInput,
+      },
+      onCompleted() {
+        console.log(data, "loool");
+
+        props.navigation.navigate("Midtrans", {
+          midtransProps: data,
+        });
+      },
+    }
+  );
+
+  console.log("the data", data);
+
+  if (loading) return <Text>Loading ...</Text>;
 
   return (
     <View>

@@ -1,21 +1,102 @@
-import React, { Component } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  View,
+} from "react-native";
 import { WebView } from "react-native-webview";
-const ReactMidtransPopup = () => {
+import { FontAwesome } from "@expo/vector-icons";
+import Base64 from "base-64";
+import { connect } from "react-redux";
+import { setOrderIdsWillBePaid } from "../../../Redux/actions/orderAction";
+
+const ReactMidtransPopup = (props) => {
+  console.log("hei", props);
+  const midtrans = props.route.params.midtransProps.createPayment;
+  const thisOrderId = props.route.params.midtransProps.createPayment.orderId;
+  const [loading, setLoading] = useState(false);
+
+  const serverKey = "SB-Mid-server-A2YHePFC9ZXOvzNUz3Rc1sQm";
+  const base64Key = Base64.encode(serverKey);
+
+  async function getStatus() {
+    // url for get the status of the transactions
+    // this url is for sandbox
+    const url = `https://api.sandbox.midtrans.com/v2/${thisOrderId}/status`;
+
+    // fetch data
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Basic " + base64Key,
+      },
+    });
+    return response.json();
+  }
+
+  const checkPayment = () => {
+    setLoading(true);
+    getStatus().then((data) => {
+      if ((data.status_code = 200)) {
+        console.log(data);
+        setLoading(false);
+        props.navigation.navigate("Payment Checker", {
+          getOrderIds: props.orderIds,
+        });
+      } else {
+        console.log(data);
+        setLoading(false);
+        alert("your order has not been paid");
+      }
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={{ height: "100%" }}>
       <WebView
         source={{
-          uri: "https://app.sandbox.midtrans.com/snap/v2/vtweb/801afe31-1524-4fce-9f6e-445f23b5f538",
+          uri: midtrans.redirect_url,
         }}
       />
+      <TouchableOpacity
+        onPress={checkPayment}
+        style={{
+          backgroundColor: "#3366FF",
+          padding: 20,
+          paddingVertical: 15,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        disabled={loading}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontWeight: "bold",
+            fontSize: 18,
+          }}
+        >
+          Cek Pembayaran
+        </Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <FontAwesome name="check-square" size={20} color="white" />
+        )}
+      </TouchableOpacity>
     </View>
   );
 };
-export default ReactMidtransPopup;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+const mapStateToProps = (state) => ({
+  orderIds: state.orders.orderIds,
 });
+
+export default connect(mapStateToProps, { setOrderIdsWillBePaid })(
+  ReactMidtransPopup
+);

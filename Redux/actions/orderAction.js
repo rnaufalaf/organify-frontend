@@ -1,4 +1,9 @@
-import { CHECKOUT_ORDER, ADD_ORDER, SET_SHIPPING_ORDER } from "./types";
+import {
+  CHECKOUT_ORDER,
+  ADD_ORDER,
+  SET_SHIPPING_ORDER,
+  ADD_ORDER_IDS,
+} from "./types";
 
 export const checkoutItems = (carts, isChange, isChecked) => (dispatch) => {
   dispatch({

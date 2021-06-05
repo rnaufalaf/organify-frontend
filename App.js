@@ -27,6 +27,7 @@ const httpLink = createHttpLink({
   // uri: "https://organify-graphql-backend.herokuapp.com/graphql",
   uri: "http://192.168.100.4:1000/graphql",
   // uri: "http://192.168.128.101:1000/graphql",
+  // uri: "http://192.168.236.101:1000/graphql",
 });
 
 const authLink = setContext(async () => {
@@ -60,7 +61,7 @@ const link = ApolloLink.from([authLink, errorLink, httpLink]);
 
 const cache = new InMemoryCache();
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   link,
   cache,
 });

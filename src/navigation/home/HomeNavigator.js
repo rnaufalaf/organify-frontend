@@ -8,6 +8,7 @@ import CheckoutScreen from "../../screens/cart/CheckoutScreen";
 import ReactMidtransPopup from "../../screens/cart/ReactMidtransPopup";
 import ChatNavigator from "../chat/ChatNavigator";
 import StoreCatalogScreen from "../../screens/product/StoreCatalogScreen";
+import MidtransPaymentChecker from "../../screens/cart/MidtransPaymentChecker";
 
 const Home = createStackNavigator();
 
@@ -46,6 +47,13 @@ export default function HomeNavigator() {
       <Home.Screen
         name="Midtrans"
         component={ReactMidtransPopup}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Home.Screen
+        name="Payment Checker"
+        component={MidtransPaymentChecker}
         options={{
           headerShown: false,
         }}
