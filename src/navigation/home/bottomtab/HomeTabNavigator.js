@@ -2,7 +2,7 @@ import React from "react";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import HomeNavigator from "../HomeNavigator";
-import OrderNavigator from "../../order/toptab/OrderTabNavigator";
+import OrderStack from "../../../navigation/order/OrderStack";
 import ProfileTabStackNavigator from "../../profile/toptab/ProfileTabStackNavigator";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -26,7 +26,7 @@ export default function HomeTabNavigator() {
       />
       <HomeTab.Screen
         name="Order"
-        component={OrderNavigator}
+        component={OrderStack}
         options={{
           tabBarIcon: () => (
             <Icon name="shopping-basket" color="white" size={21} />

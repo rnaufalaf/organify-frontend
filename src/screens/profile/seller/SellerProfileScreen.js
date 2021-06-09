@@ -121,7 +121,9 @@ const SellerProfileScreen = (props) => {
                 <Text style={styles.menuItemText}>Manage Products</Text>
               </View>
             </TouchableRipple>
-            <TouchableRipple onPress={() => {}}>
+            <TouchableRipple
+              onPress={() => props.navigation.navigate("Seller Order")}
+            >
               <View style={styles.menuItem}>
                 <Icon name="mailbox" color="gray" size={25} />
                 <Text style={styles.menuItemText}>Manage Orders</Text>

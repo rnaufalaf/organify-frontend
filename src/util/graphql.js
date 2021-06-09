@@ -750,3 +750,116 @@ export const CREATE_PAYMENT_QUERY = gql`
     }
   }
 `;
+
+export const GET_USER_ORDERS = gql`
+  {
+    getUserOrders {
+      id
+      products {
+        id
+        name
+        images {
+          id
+          downloadUrl
+        }
+        price
+        weight
+        productQty
+      }
+      user {
+        buyer {
+          name
+        }
+      }
+      seller {
+        username
+      }
+      state {
+        stateType
+        createdAt
+        deadline
+      }
+      logs {
+        stateType
+        succededAt
+        executedAt
+      }
+      shipping {
+        awbNumber
+        courierName
+        buyerAddress
+        shippingCost
+      }
+    }
+  }
+`;
+
+export const GET_SELLER_ORDERS = gql`
+  query ($username: String!) {
+    getSellerOrders(username: $username) {
+      id
+      products {
+        id
+        name
+        price
+        weight
+        images {
+          downloadUrl
+        }
+        productQty
+      }
+      user {
+        buyer {
+          name
+        }
+      }
+      seller {
+        username
+      }
+      shipping {
+        awbNumber
+        courierName
+        buyerAddress
+        shippingCost
+      }
+      state {
+        stateType
+      }
+      logs {
+        succededAt
+        stateType
+        executedAt
+      }
+    }
+  }
+`;
+
+export const ADD_AWB_NUMBER = gql`
+  mutation addAwbNumber(
+    $orderId: ID!
+    $awbNumber: String!
+    $courierName: String!
+    $buyerAddress: String!
+    $shippingCost: Int!
+  ) {
+    addAwbNumber(
+      orderId: $orderId
+      awbNumber: $awbNumber
+      courierName: $courierName
+      buyerAddress: $buyerAddress
+      shippingCost: $shippingCost
+    ) {
+      id
+      state {
+        stateType
+        createdAt
+        deadline
+      }
+      logs {
+        stateType
+        succededAt
+        executedAt
+      }
+    }
+  }
+`;

@@ -3,8 +3,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 import BuyerProfileScreen from "../../screens/profile/buyer/BuyerProfileScreen";
-import EditBuyerProfileScreen from "../../screens/profile/buyer/EditBuyerProfileScreen";
-import ListScreen from "../../screens/profile/buyer/ListScreen";
 
 const BuyerProfile = createStackNavigator();
 
@@ -27,27 +25,6 @@ export default function BuyerProfileStack({ navigation }) {
         component={BuyerProfileScreen}
         options={{
           headerShown: false,
-        }}
-      />
-      <BuyerProfile.Screen
-        name="Wishlist Screen"
-        component={ListScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <BuyerProfile.Screen
-        name="Edit Buyer Profile"
-        component={EditBuyerProfileScreen}
-        options={{
-          headerShown: false,
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "white",
-          },
-          headerStyle: {
-            backgroundColor: "green",
-          },
         }}
       />
     </BuyerProfile.Navigator>

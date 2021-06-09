@@ -14,27 +14,26 @@ var { height, width } = Dimensions.get("window");
 const MidtransPaymentChecker = (props) => {
   console.log(props.route.params, "im here");
 
-  const changeOrderState = () => {
-    props.orderIds.forEach((orderId) => {
-      client
-        .mutate({
-          mutation: UPDATE_ORDER,
-          variables: {
-            orderId: orderId,
-            state: "PROCESSED",
-          },
-        })
-        .then((result) => {
-          console.log("update order success", result);
-        });
-      props.navigation.navigate("Product Container");
-    });
+  const redirectToHomeScreen = () => {
+    // props.orderIds.forEach((orderId) => {
+    //   client
+    //     .mutate({
+    //       mutation: UPDATE_ORDER,
+    //       variables: {
+    //         orderId: orderId,
+    //         state: "PROCESSED",
+    //       },
+    //     })
+    //     .then((result) => {
+    //       console.log("update order success", result);
+    //     });
+    props.navigation.navigate("Product Container");
   };
 
   return (
     <Container style={styles.container}>
       <Text>Payment Succesful!</Text>
-      <Button mode="contained" onPress={changeOrderState}>
+      <Button mode="contained" onPress={redirectToHomeScreen}>
         Back to homescreen
       </Button>
     </Container>

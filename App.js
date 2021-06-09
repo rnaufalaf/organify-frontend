@@ -28,6 +28,8 @@ const httpLink = createHttpLink({
   uri: "http://192.168.100.4:1000/graphql",
   // uri: "http://192.168.128.101:1000/graphql",
   // uri: "http://192.168.236.101:1000/graphql",
+  // uri: "http://192.168.183.101:1000/graphql",
+  // uri: "http://192.168.150.101:1000/graphql",
 });
 
 const authLink = setContext(async () => {
