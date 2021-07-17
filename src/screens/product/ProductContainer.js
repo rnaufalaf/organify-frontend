@@ -24,7 +24,7 @@ const ProductContainer = (props) => {
   const [focus, setFocus] = useState();
   const [active, setActive] = useState();
   const [activeChip, setActiveChip] = useState();
-  const { loading, data: productData } = useQuery(GET_PRODUCTS);
+  const { loading, data: productData, refetch } = useQuery(GET_PRODUCTS);
   const { getProducts: productList } = productData ? productData : [];
 
   useEffect(() => {
@@ -60,6 +60,10 @@ const ProductContainer = (props) => {
   const handleChip = (name) => {
     setActiveChip(name);
     console.log(name);
+  };
+
+  const refetchProduct = () => {
+    refetch();
   };
 
   var productsToFilter = [];
@@ -132,7 +136,9 @@ const ProductContainer = (props) => {
                     { margin: 5 },
                     active == -1 ? styles.active : styles.inactive,
                   ]}
-                  onPress={() => handleChip("All")}
+                  onPress={() => {
+                    handleChip("All"), refetchProduct();
+                  }}
                 >
                   All
                 </Chip>
@@ -143,7 +149,9 @@ const ProductContainer = (props) => {
                     { margin: 5 },
                     active == -1 ? styles.active : styles.inactive,
                   ]}
-                  onPress={() => handleChip("Sayur")}
+                  onPress={() => {
+                    handleChip("Sayur"), refetchProduct();
+                  }}
                 >
                   Sayur
                 </Chip>
@@ -154,7 +162,9 @@ const ProductContainer = (props) => {
                     { margin: 5 },
                     active == -1 ? styles.active : styles.inactive,
                   ]}
-                  onPress={() => handleChip("Buah")}
+                  onPress={() => {
+                    handleChip("Buah"), refetchProduct();
+                  }}
                 >
                   Buah
                 </Chip>

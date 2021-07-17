@@ -79,7 +79,6 @@ const EditSellerProductScreen = (props) => {
               // setImages(url);
               setImage((img) => [...img, url]);
               console.log("test", url);
-              setImageCount(image.length);
             });
         }
       );

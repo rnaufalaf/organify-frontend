@@ -31,6 +31,7 @@ import { useForm } from "../../../util/hooks";
 import { ADD_PRODUCT } from "../../../util/graphql";
 
 const AddProductScreen = (props) => {
+  console.log(props.route.params, "lols");
   const [errors, setErrors] = useState({});
   const [isSaved, setSave] = useState(false);
   const { onChange, onSubmit, values } = useForm(addProduct, {
@@ -72,7 +73,6 @@ const AddProductScreen = (props) => {
               // setImages(url);
               setImage((img) => [...img, url]);
               console.log("test", url);
-              setImageCount(image.length);
             });
         }
       );
@@ -103,6 +103,7 @@ const AddProductScreen = (props) => {
       });
       setErrors({});
       console.log("data", addProduct);
+      props.route.params.refetchCatalog();
       props.navigation.dispatch(CommonActions.goBack());
     },
     onError(err) {

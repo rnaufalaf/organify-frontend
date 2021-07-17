@@ -41,7 +41,11 @@ const SellerProductContainer = (props) => {
         style={styles.fab}
         medium
         icon="plus"
-        onPress={() => props.navigation.navigate("Add Product")}
+        onPress={() =>
+          props.navigation.navigate("Add Product", {
+            refetchCatalog: refetch,
+          })
+        }
       />
     </View>
   );
