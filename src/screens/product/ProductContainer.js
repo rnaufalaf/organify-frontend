@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions, StyleSheet, ScrollView } from "react-native";
-import { Card, TouchableRipple } from "react-native-paper";
+import { Card, Chip } from "react-native-paper";
+import { ListItem, Header, Item, Icon, Input } from "native-base";
 import Constants from "expo-constants";
 
 import ProductList from "./ProductList";
@@ -21,21 +22,26 @@ const ProductContainer = (props) => {
   const [products, setProducts] = useState([]);
   const [productsFiltered, setProductsFiltered] = useState([]);
   const [focus, setFocus] = useState();
-  const [productsCtg, setProductsCtg] = useState([]);
-  const [active, setActive] = useState([]);
-  const [initialState, setInitialState] = useState([]);
+  const [active, setActive] = useState();
+  const [activeChip, setActiveChip] = useState();
   const { loading, data: productData } = useQuery(GET_PRODUCTS);
   const { getProducts: productList } = productData ? productData : [];
 
   useEffect(() => {
     setProducts(productList);
     setProductsFiltered(productList);
-    // setProductsCtg(data);
+    setFocus(false);
     setActive(-1);
-    setInitialState(productList);
-  }, []);
+    setActiveChip("All");
 
-  // Search
+    return () => {
+      setProducts([]);
+      setProductsFiltered([]);
+      setFocus();
+      setActive();
+      setActiveChip();
+    };
+  }, []);
 
   const searchProduct = (text) => {
     setProductsFiltered(
@@ -51,18 +57,32 @@ const ProductContainer = (props) => {
     setFocus(false);
   };
 
-  // Category Filter
+  const handleChip = (name) => {
+    setActiveChip(name);
+    console.log(name);
+  };
 
-  // const changeCtg = (ctg) => {
-  //   {
-  //     ctg === "all"
-  //       ? [setProductsCtg(initialState), setActive(true)]
-  //       : [
-  //           setProductsCtg(products.filter((i) => i.category.$oid == ctg)),
-  //           setActive(true),
-  //         ];
-  //   }
-  // };
+  var productsToFilter = [];
+
+  if (productList && activeChip === "All") {
+    productsToFilter.push(productList);
+  } else if (
+    productList &&
+    activeChip === "Sayur" &&
+    productList.find((product) => product.category === "Sayur")
+  ) {
+    productsToFilter.push(
+      productList.filter((product) => product.category === "Sayur")
+    );
+  } else if (
+    productList &&
+    activeChip === "Buah" &&
+    productList.find((product) => product.category === "Buah")
+  ) {
+    productsToFilter.push(
+      productList.filter((product) => product.category === "Buah")
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -71,23 +91,21 @@ const ProductContainer = (props) => {
         <SubtitleComponent subtitle="Pilih berdasarkan kategori berikut" />
       </Card>
       <Card>
-        <SearchBar
-          onChangeText={(text) => searchProduct(text)}
-          onFocus={openList}
-          clearIconPressed={onBlur}
-        />
+        <Item>
+          <Icon name="ios-search" />
+          <Input
+            placeholder="Search"
+            onFocus={openList}
+            onChangeText={(text) => searchProduct(text)}
+          />
+          {focus == true ? <Icon onPress={onBlur} name="ios-close" /> : null}
+        </Item>
       </Card>
       {focus == true ? (
-        <View>
-          {productList.map((productsFiltered) => {
-            return (
-              <SearchedProducts
-                navigation={props.navigation}
-                productsFiltered={productsFiltered}
-              />
-            );
-          })}
-        </View>
+        <SearchedProducts
+          navigation={props.navigation}
+          productsFiltered={productsFiltered}
+        />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -96,32 +114,76 @@ const ProductContainer = (props) => {
           <Card>
             <TitleComponent title="Best seller" />
             <SubtitleComponent subtitle="Produk yang sering dibeli" />
+          </Card>
+          <Card>
             <View>
-              {/* <CategoryFilter
-                  categories={data.category}
-                  categoryFilter={changeCtg}
-                  productsCtg={productsCtg}
-                  active={active}
-                  setActive={setActive}
-                /> */}
+              <ListItem
+                style={{
+                  margin: 5,
+                  padding: 0,
+                  borderRadius: 3,
+                  flexDirection: "row",
+                }}
+              >
+                <Chip
+                  textStyle={styles.text}
+                  style={[
+                    styles.center,
+                    { margin: 5 },
+                    active == -1 ? styles.active : styles.inactive,
+                  ]}
+                  onPress={() => handleChip("All")}
+                >
+                  All
+                </Chip>
+                <Chip
+                  textStyle={styles.text}
+                  style={[
+                    styles.center,
+                    { margin: 5 },
+                    active == -1 ? styles.active : styles.inactive,
+                  ]}
+                  onPress={() => handleChip("Sayur")}
+                >
+                  Sayur
+                </Chip>
+                <Chip
+                  textStyle={styles.text}
+                  style={[
+                    styles.center,
+                    { margin: 5 },
+                    active == -1 ? styles.active : styles.inactive,
+                  ]}
+                  onPress={() => handleChip("Buah")}
+                >
+                  Buah
+                </Chip>
+              </ListItem>
             </View>
           </Card>
           {!loading ? (
-            <View style={styles.listContainer}>
-              {productList.map((product, index) => {
-                return (
-                  <ProductList
-                    navigation={props.navigation}
-                    key={index}
-                    product={product}
-                  />
-                );
-              })}
-            </View>
+            productsToFilter.length > 0 ? (
+              <View style={styles.listContainer}>
+                {productsToFilter[0] &&
+                  productsToFilter[0].map((product, index) => (
+                    <ProductList
+                      navigation={props.navigation}
+                      key={index}
+                      product={product}
+                    />
+                  ))}
+              </View>
+            ) : (
+              <View style={[styles.center]}>
+                <Text>No products found</Text>
+              </View>
+            )
           ) : (
-            <View style={[styles.center]}>
-              <Text>No products found</Text>
-            </View>
+            <Card>
+              <Card.Content>
+                <Text>Loading</Text>
+              </Card.Content>
+            </Card>
           )}
         </ScrollView>
       )}
@@ -144,6 +206,15 @@ const styles = StyleSheet.create({
   center: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  text: {
+    color: "white",
+  },
+  active: {
+    backgroundColor: "green",
+  },
+  inactive: {
+    backgroundColor: "lightgreen",
   },
 });
 

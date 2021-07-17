@@ -17,11 +17,11 @@ import Paragraph from "../../../components/common/Paragraph";
 import Button from "../../../components/common/Button";
 
 const SellerProfileScreen = (props) => {
-  const context = useContext(AuthContext);
-  console.log("this is the logged user", context.user.id);
+  const { user } = useContext(AuthContext);
+  console.log("this is the logged user", user.id);
   const { loading, data } = useQuery(GET_USER, {
     variables: {
-      userId: context.user.id,
+      userId: user.id,
     },
   });
   const { getUser: currentUser } = data ? data : [];

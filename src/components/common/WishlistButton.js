@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import Toast from "react-native-toast-message";
 // import { IconButton } from "react-native-paper";
 import Entypo from "react-native-vector-icons/Entypo";
 
@@ -31,22 +32,12 @@ function WishlistButton({ user, product }) {
     variables: { productId: product.id },
     update() {
       refetch();
-      // console.log("ini result", result.data);
-      // const data = proxy.readQuery({
-      //   query: GET_PRODUCTS_CART,
+      Toast.show({
+        topOffset: 60,
+        type: "success",
+        text1: "Action completed",
+      });
     },
-
-    //   proxy.writeQuery({
-    //     query: GET_PRODUCTS_CART,
-    //     data: {
-    //       getProductsCart: [
-    //         result.data.editProductsInCart,
-    //         ...data.getProductsCart,
-    //       ],
-    //     },
-    //   });
-    //   setEditProductQty(false);
-    // },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
       console.log(errors);

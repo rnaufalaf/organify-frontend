@@ -9,6 +9,8 @@ import ReactMidtransPopup from "../../screens/cart/ReactMidtransPopup";
 import ChatNavigator from "../chat/ChatNavigator";
 import StoreCatalogScreen from "../../screens/product/StoreCatalogScreen";
 import MidtransPaymentChecker from "../../screens/cart/MidtransPaymentChecker";
+import MessageScreen from "../../screens/chat/MessageScreen";
+import ProductReviewScreen from "../../screens/review/ProductReviewScreen";
 
 const Home = createStackNavigator();
 
@@ -26,10 +28,19 @@ export default function HomeNavigator() {
         options={{ headerShown: false }}
       />
       <Home.Screen
+        name="Product Review"
+        component={ProductReviewScreen}
+        options={{ headerShown: true }}
+      />
+      <Home.Screen
         name="Store Catalog"
         component={StoreCatalogScreen}
         options={{ headerShown: false }}
       />
+      <Home.Screen
+        name="Message Screen"
+        component={MessageScreen}
+      ></Home.Screen>
       <Home.Screen
         name="Cart"
         component={CartScreen}

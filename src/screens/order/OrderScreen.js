@@ -116,7 +116,7 @@ const OrderScreen = (props) => {
       <ScrollView style={{ backgroundColor: "#f2f2f2", flex: 1 }}>
         <Card>
           <Card.Content>
-            <ScrollView horizontal="true">
+            <ScrollView horizontal={true}>
               <ListItem
                 style={{
                   margin: 5,

@@ -12,6 +12,9 @@ import ListScreen from "../../../screens/profile/buyer/ListScreen";
 
 const ProfileTabStack = createStackNavigator();
 
+import { TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 export default function ProfileTabStackNavigator({ navigation }) {
   return (
     <ProfileTabStack.Navigator>
@@ -33,6 +36,13 @@ export default function ProfileTabStackNavigator({ navigation }) {
         component={EditSellerProfileScreen}
         options={{
           headerShown: true,
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            color: "white",
+          },
+          headerStyle: {
+            backgroundColor: "green",
+          },
         }}
       />
       <ProfileTabStack.Screen

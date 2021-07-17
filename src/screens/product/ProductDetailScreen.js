@@ -29,10 +29,12 @@ import {
   ADD_PRODUCT_TO_CART,
   GET_PRODUCTS_CART,
   GET_PRODUCT_IN_CART,
+  GET_PRODUCT_REVIEWS,
 } from "../../util/graphql";
 
 const ProductDetailScreen = (props) => {
   const [product, setProduct] = useState(props.route.params.product);
+  const productId = props.route.params.product.id;
   const [productQty, setProductQty] = useState(1);
   const [addProductQty, setAddProductQty] = useState(false);
   const [errors, setErrors] = useState({});
@@ -62,16 +64,6 @@ const ProductDetailScreen = (props) => {
       });
 
       console.log("Sampe sini");
-
-      // const productInCart = proxy.readQuery({
-      //   query: GET_PRODUCT_IN_CART,
-      // });
-      // proxy.writeQuery({
-      //   query: GET_PRODUCT_IN_CART,
-      //   data: {
-      //     getProductInCart: productInCart.getProductInCart,
-      //   },
-      // });
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
@@ -99,6 +91,11 @@ const ProductDetailScreen = (props) => {
 
   function addProductCart() {
     addToCart();
+    Toast.show({
+      topOffset: 60,
+      type: "success",
+      text1: "Product added to Cart",
+    });
   }
 
   const renderContent = () => (
@@ -215,6 +212,7 @@ const ProductDetailScreen = (props) => {
   //   addToCart();
   // }
 
+  console.log(product.user, "label");
   return (
     <>
       <View style={styles.container}>
@@ -240,7 +238,11 @@ const ProductDetailScreen = (props) => {
                 style={styles.contentHeader}
               />
               <TouchableOpacity
-                onPress={() => props.navigation.navigate("Store Catalog")}
+                onPress={() =>
+                  props.navigation.navigate("Store Catalog", {
+                    storeId: product.user.id,
+                  })
+                }
               >
                 <View style={{ flexDirection: "row" }}>
                   <Avatar.Image
@@ -254,6 +256,15 @@ const ProductDetailScreen = (props) => {
                   <WishlistButton user={user} product={product} />
                   {/* </View> */}
                 </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.navigate("Product Review", {
+                    product: product,
+                  })
+                }
+              >
+                <Text style={styles.contentText}>View Product Reviews</Text>
               </TouchableOpacity>
             </View>
             <Divider style={{ marginTop: 10 }} />

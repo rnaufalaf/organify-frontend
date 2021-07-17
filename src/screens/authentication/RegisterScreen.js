@@ -21,7 +21,7 @@ const RegisterScreen = ({ navigation }) => {
   const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     email: "",
-    username: "",
+    name: "",
     password: "",
     confirmPassword: "",
   });
@@ -70,14 +70,14 @@ const RegisterScreen = ({ navigation }) => {
             keyboardType="email-address"
           />
           <TextInput
-            label="Username"
+            label="Name"
             returnKeyType="next"
-            value={values.username}
-            error={errors.username ? true : false}
-            onChangeText={(val) => onChange("username", val)}
+            value={values.name}
+            error={errors.name ? true : false}
+            onChangeText={(val) => onChange("name", val)}
             autoCapitalize="none"
-            autoCompleteType="username"
-            textContentType="username"
+            autoCompleteType="name"
+            textContentType="name"
           />
 
           <TextInput

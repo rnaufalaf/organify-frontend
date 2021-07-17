@@ -13,16 +13,16 @@ import { AuthContext } from "../../../context/auth";
 import { GET_USER } from "../../../util/graphql";
 
 const BuyerProfileScreen = (props) => {
-  const context = useContext(AuthContext);
-  console.log("this is the logged user", context.user.id);
+  const { user, logout } = useContext(AuthContext);
+  console.log("this is the logged user", user.id);
   const { loading, data: data } = useQuery(GET_USER, {
     variables: {
-      userId: context.user.id,
+      userId: user.id,
     },
   });
   const { getUser: currentUser } = data ? data : [];
 
-  // console.log("user@profileCard: ", currentUser);
+  console.log("user@profileCard: ", currentUser);
 
   const [avatar] = useState(
     "https://react.semantic-ui.com/images/avatar/large/molly.png"
@@ -114,7 +114,14 @@ const BuyerProfileScreen = (props) => {
                 <Text style={styles.menuItemText}>Change User Profile</Text>
               </View>
             </TouchableRipple>
-            <TouchableRipple onPress={() => {}}>
+            <TouchableRipple
+              onPress={() => {
+                logout;
+                props.navigation.navigate("Authentication", {
+                  screen: "Login",
+                });
+              }}
+            >
               <View style={styles.menuItem}>
                 <Icon name="logout" color="gray" size={25} />
                 <Text style={styles.menuItemText}>Logout</Text>

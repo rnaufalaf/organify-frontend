@@ -13,22 +13,38 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 import { useQuery } from "@apollo/react-hooks";
 import { AuthContext } from "../../context/auth";
-import { GET_SELLER_PRODUCTS, GET_USER } from "../../util/graphql";
+import {
+  GET_SELLER_PRODUCTS,
+  GET_USER,
+  GET_USER_CHATS,
+} from "../../util/graphql";
 
 import ProductList from "./ProductList";
 
 const StoreCatalogScreen = (props) => {
-  const context = useContext(AuthContext);
+  const user = useContext(AuthContext);
+  const { dataChat } = useQuery(GET_USER_CHATS);
+  const { getChats: chats } = dataChat ? dataChat : [];
+  const receiver = (users) => {
+    let userReceiver;
+    if (users[0].id !== user.id) {
+      userReceiver = users[0];
+    } else {
+      userReceiver = users[1];
+    }
+    return userReceiver;
+  };
+  const sellerId = props.route.params.storeId;
 
   const { data } = useQuery(GET_SELLER_PRODUCTS, {
     variables: {
-      userId: context.user.id,
+      userId: sellerId,
     },
   });
 
   const { loading, data: userdata } = useQuery(GET_USER, {
     variables: {
-      userId: context.user.id,
+      userId: sellerId,
     },
   });
 
@@ -70,13 +86,28 @@ const StoreCatalogScreen = (props) => {
                     </View>
                   </Left>
                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text style={{ fontWeight: "bold", color: "green" }}>
-                    Store Description
-                  </Text>
-                  <Paragraph style={{ fontSize: 15 }}>
-                    {sellerData.seller.description}
-                  </Paragraph>
+                <View style={{ flexDirection: "row" }}>
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={{ fontWeight: "bold", color: "green" }}>
+                      Store Description
+                    </Text>
+                    <Paragraph style={{ fontSize: 15 }}>
+                      {sellerData.seller.description}
+                    </Paragraph>
+                  </View>
+                  <View style={{ marginLeft: 20, marginTop: 10 }}>
+                    <Button
+                      onPress={() =>
+                        props.navigation.navigate("Message Screen", {
+                          username: receiver(chats.users).seller.username,
+                          chatId: chats.id,
+                        })
+                      }
+                      mode="contained"
+                    >
+                      Chat Seller
+                    </Button>
+                  </View>
                 </View>
               </Card.Content>
             </Card>

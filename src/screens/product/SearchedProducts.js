@@ -1,25 +1,25 @@
 import React from "react";
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { ScrollView, StyleSheet, Dimensions, Text } from "react-native";
 import { List, Avatar, Card, Divider } from "react-native-paper";
+import { Content } from "native-base";
 
 var { width } = Dimensions.get("window");
 
 const SearchedProducts = (props) => {
   const { productsFiltered } = props;
-  console.log("products in search", productsFiltered);
   return (
-    <View style={{ width: width }}>
+    <Content style={{ width: width }}>
       {productsFiltered.length > 0 ? (
-        productsFiltered.map((product, index) => (
+        productsFiltered.map((product) => (
           <Card>
             <Divider />
-            <List.product
+            <List.Item
               onPress={() => {
                 props.navigation.navigate("Product Detail", {
                   product: product,
                 });
               }}
-              key={index}
+              key={product.id}
               left={() => (
                 <Avatar.Image
                   source={{
@@ -41,7 +41,7 @@ const SearchedProducts = (props) => {
           </Text>
         </View>
       )}
-    </View>
+    </Content>
   );
 };
 

@@ -7,6 +7,7 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   TextInput,
+  Alert,
 } from "react-native";
 import { useTheme, IconButton } from "react-native-paper";
 import { useMutation } from "@apollo/react-hooks";
@@ -33,7 +34,28 @@ const EditSellerProductScreen = (props) => {
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState([]);
 
+  console.log(productId, "the productId");
+
+  console.log("the props", props.route.params);
+
   console.log("edit seller", props.photos);
+
+  const deleteAlert = () =>
+    Alert.alert(
+      "Confirm Delete Product ?",
+      "Are you sure to delete your product?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => productDelete(),
+        },
+      ]
+    );
 
   const uploadImage = async (uri, imageName) => {
     if (uri) {
@@ -98,26 +120,31 @@ const EditSellerProductScreen = (props) => {
 
   const [updateProduct] = useMutation(UPDATE_PRODUCT, {
     update(_, { data: { updateProduct: updatedProduct } }) {
-      setSave(true);
       setErrors({});
       Toast.show({
         topOffset: 60,
         type: "success",
         text1: "Product Updated",
       });
+      props.route.params.refetchCatalog();
       props.navigation.dispatch(CommonActions.goBack());
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
       console.log(err.graphQLErrors[0]);
-      setSave(true);
     },
     variables: values,
   });
 
   const [deleteProduct] = useMutation(DELETE_PRODUCT, {
     update() {
-      props.refetchCatalog();
+      props.route.params.refetchCatalog();
+      Toast.show({
+        topOffset: 60,
+        type: "success",
+        text1: "Product Deleted",
+      });
+      props.navigation.dispatch(CommonActions.goBack());
     },
     variables: { productId: productId },
   });
@@ -211,7 +238,6 @@ const EditSellerProductScreen = (props) => {
           <View
             style={{
               alignItems: "center",
-              marginBottom: 10,
             }}
           >
             <TouchableOpacity onPress={() => bottomSheet.current.snapTo(0)}>
@@ -221,7 +247,6 @@ const EditSellerProductScreen = (props) => {
                     height: 100,
                     width: 100,
                     borderRadius: 15,
-                    flexDirection: "column",
                   }}
                 >
                   <ImageBackground
@@ -411,10 +436,7 @@ const EditSellerProductScreen = (props) => {
         <TouchableOpacity style={styles.commandButton} onPress={onSubmit}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.redCommandButton}
-          onPress={productDelete}
-        >
+        <TouchableOpacity style={styles.redCommandButton} onPress={deleteAlert}>
           <Text style={styles.panelButtonTitle}>Delete Product</Text>
         </TouchableOpacity>
       </Animated.ScrollView>

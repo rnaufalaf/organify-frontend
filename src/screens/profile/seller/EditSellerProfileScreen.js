@@ -130,7 +130,7 @@ const EditSellerProfileScreen = (props) => {
       context.login(sellerData);
       setSave(true);
       console.log("this is the sellerData" + sellerData);
-      props.navigation.navigate("Seller Profile");
+      props.navigation.navigate("My Profiles");
       setErrors({});
       Toast.show({
         topOffset: 60,

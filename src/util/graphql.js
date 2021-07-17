@@ -17,14 +17,14 @@ export const LOGIN_USER = gql`
 export const REGISTER_USER = gql`
   mutation register(
     $email: String!
-    $username: String!
+    $name: String!
     $password: String!
     $confirmPassword: String!
   ) {
     register(
       registerInput: {
         email: $email
-        name: $username
+        name: $name
         password: $password
         confirmPassword: $confirmPassword
       }
@@ -169,6 +169,34 @@ export const GET_PRODUCT = gql`
   }
 `;
 
+export const GET_PRODUCT_REVIEWS = gql`
+  query ($productId: ID!) {
+    getProductReviews(productId: $productId) {
+      id
+      score
+      body
+      user {
+        id
+        email
+        buyer {
+          id
+          name
+          avatar
+        }
+      }
+      product {
+        id
+        name
+      }
+      images {
+        id
+        downloadUrl
+      }
+      createdAt
+    }
+  }
+`;
+
 export const GET_PRODUCTS = gql`
   query {
     getProducts {
@@ -188,6 +216,7 @@ export const GET_PRODUCTS = gql`
         seller {
           id
           username
+          avatar
         }
       }
       wishlistedBy {
@@ -243,6 +272,7 @@ export const ADD_PRODUCT = gql`
     $price: Int!
     $weight: Int!
     $stock: Int!
+    $images: [ImageInput]!
   ) {
     addProduct(
       productInput: {
@@ -254,7 +284,7 @@ export const ADD_PRODUCT = gql`
         price: $price
         weight: $weight
         stock: $stock
-        images: [{ downloadUrl: "" }]
+        images: $images
       }
     ) {
       id
@@ -339,6 +369,9 @@ export const GET_WISHLIST = gql`
       id
       name
       price
+      stock
+      benefits
+      method
       createdAt
       description
 
@@ -360,6 +393,7 @@ export const GET_WISHLIST = gql`
         seller {
           id
           username
+          avatar
         }
       }
     }
@@ -860,6 +894,19 @@ export const ADD_AWB_NUMBER = gql`
         succededAt
         executedAt
       }
+    }
+  }
+`;
+
+export const ADD_REVIEW = gql`
+  mutation addReview($score: Int!, $body: String!, $productId: ID!) {
+    addReview(
+      addReviewInput: { score: $score, body: $body, productId: $productId }
+    ) {
+      id
+      score
+      body
+      createdAt
     }
   }
 `;

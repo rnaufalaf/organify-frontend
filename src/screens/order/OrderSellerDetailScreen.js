@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Card, Divider, Button, useTheme } from "react-native-paper";
 import { List, ListItem, Left, Right } from "native-base";
+import Toast from "react-native-toast-message";
 
 import { useMutation } from "@apollo/react-hooks";
 import OrderDetailsCard from "../../components/common/OrderDetailsCard";
@@ -86,14 +87,29 @@ const OrderSellerDetailScreen = (props) => {
 
   function confirmOrder() {
     setStateType("PROCESSED");
+    Toast.show({
+      topOffset: 60,
+      type: "success",
+      text1: "Order has been processed",
+    });
     setEditState(true);
   }
   function rejectOrder() {
     setStateType("FAILED");
+    Toast.show({
+      topOffset: 60,
+      type: "success",
+      text1: "Order is rejected",
+    });
     setEditState(true);
   }
   function shipOrder() {
     setStateType("DELIVERY");
+    Toast.show({
+      topOffset: 60,
+      type: "success",
+      text1: "Order is set to Delivery",
+    });
     setEditState(true);
   }
   if (editState) {

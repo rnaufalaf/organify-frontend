@@ -31,56 +31,54 @@ const ChatScreen = (props) => {
     }
     return userReceiver;
   };
-
-  let markup = (
-    <Container>
-      <View>
-        <Text>Loading Chats...</Text>
-      </View>
-    </Container>
+  console.log(chats, "chats");
+  return (
+    <>
+      {!loading ? (
+        <View>
+          <FlatList
+            data={chats}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Card
+                onPress={() =>
+                  props.navigation.navigate("Message Screen", {
+                    username: receiver(item.users).seller.username,
+                    chatId: item.id,
+                  })
+                }
+              >
+                <UserInfo>
+                  <UserImgWrapper>
+                    <UserImg
+                      source={{
+                        uri: receiver(item.users).seller.avatar
+                          ? receiver(item.users).seller.avatar
+                          : "https://react.semantic-ui.com/images/avatar/large/molly.png",
+                      }}
+                    />
+                  </UserImgWrapper>
+                  <TextSection>
+                    <UserInfoText>
+                      <UserName>
+                        {receiver(item.users).seller.username}
+                      </UserName>
+                      {/* <PostTime>{item.sentAt}</PostTime> */}
+                    </UserInfoText>
+                    <MessageText>{item.lastMsg}</MessageText>
+                  </TextSection>
+                </UserInfo>
+              </Card>
+            )}
+          />
+        </View>
+      ) : (
+        <View style={{ alignItems: "center" }}>
+          <Text>No chats detected</Text>
+        </View>
+      )}
+    </>
   );
-
-  if (!loading) {
-    console.log("chat", chats);
-    markup = (
-      <Container>
-        <FlatList
-          data={chats}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Card
-              onPress={() =>
-                props.navigation.navigate("Message Screen", {
-                  username: receiver(item.users).seller.username,
-                  chatId: item.id,
-                })
-              }
-            >
-              <UserInfo>
-                <UserImgWrapper>
-                  <UserImg
-                    source={{
-                      uri: receiver(item.users).seller.avatar
-                        ? receiver(item.users).seller.avatar
-                        : "https://react.semantic-ui.com/images/avatar/large/molly.png",
-                    }}
-                  />
-                </UserImgWrapper>
-                <TextSection>
-                  <UserInfoText>
-                    <UserName>{receiver(item.users).seller.username}</UserName>
-                    {/* <PostTime>{item.sentAt}</PostTime> */}
-                  </UserInfoText>
-                  <MessageText>{item.lastMsg}</MessageText>
-                </TextSection>
-              </UserInfo>
-            </Card>
-          )}
-        />
-      </Container>
-    );
-  }
-  return markup;
 };
 
 export default ChatScreen;
